@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	pc "github.com/paloaltonetworks/prisma-cloud-go"
+	pc "github.com/paloaltonetworks/prisma-cloud-compute-go"
 )
 
 // Identify returns the ID associated with the specified alert rule name.
