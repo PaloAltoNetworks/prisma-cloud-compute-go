@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	pc "github.com/paloaltonetworks/prisma-cloud-compute-go"
-//	pc "prisma-cloud-compute-go"
 )
 
 // List returns a list of all collections
@@ -21,8 +20,8 @@ func List(c pc.PrismaCloudClient) ([]Collection, error) {
 }
 
 /*
-// Identify returns the ID for the given collection name.
-func Identify(c pc.PrismaCloudClient, name string) (string, error) {
+// Identify returns the name for the given collection id.
+func Identify(c pc.PrismaCloudClient, id string) (string, error) {
 	c.Log(pc.LogAction, "(get) id for %s name:%s", singular, name)
 
 	ans, err := List(c, map[string]string{"collection.name": name})
@@ -41,7 +40,6 @@ func Identify(c pc.PrismaCloudClient, name string) (string, error) {
 }
 */
 
-/*
 // Get returns the collection that has the specified name.
 func Get(c pc.PrismaCloudClient, name string) (Collection, error) {
 	c.Log(pc.LogAction, "(get) %s name:%s", singular, name)
@@ -55,7 +53,7 @@ func Get(c pc.PrismaCloudClient, name string) (Collection, error) {
 
 	return ans, err
 }
-*/
+
 
 // Create adds a new collection.
 func Create(c pc.PrismaCloudClient, collection Collection) error {
