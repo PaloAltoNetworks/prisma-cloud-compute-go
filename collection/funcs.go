@@ -21,8 +21,8 @@ func List(c pc.PrismaCloudClient) ([]Collection, error) {
 }
 
 /*
-// Identify returns the ID for the given collection name.
-func Identify(c pc.PrismaCloudClient, name string) (string, error) {
+// Identify returns the id for the given collection name.
+func Identify(c pc.PrismaCloudClient, id string) (string, error) {
 	c.Log(pc.LogAction, "(get) id for %s name:%s", singular, name)
 
 	ans, err := List(c, map[string]string{"collection.name": name})
@@ -41,21 +41,34 @@ func Identify(c pc.PrismaCloudClient, name string) (string, error) {
 }
 */
 
-/*
 // Get returns the collection that has the specified name.
 func Get(c pc.PrismaCloudClient, name string) (Collection, error) {
 	c.Log(pc.LogAction, "(get) %s name:%s", singular, name)
 
-	path := make([]string, 0, len(Suffix)+1)
+/*	path := make([]string, 0, len(Suffix)+1)
 	path = append(path, Suffix...)
 	path = append(path, name)
 
 	var ans Collection
 	_, err := c.Communicate("GET", path, nil, nil, &ans)
 
+	return ans, err*/
+
+	var ans Collection
+	
+	listing, err := List(c)
+	if err != nil {
+        	return listing[0], err
+        }
+	
+	for _, elm := range listing {
+		if elm.Name == name {
+			return elm, err
+		}
+	}
 	return ans, err
 }
-*/
+
 
 // Create adds a new collection.
 func Create(c pc.PrismaCloudClient, collection Collection) error {
