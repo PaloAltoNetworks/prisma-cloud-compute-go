@@ -6,35 +6,20 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 	"testing"
 )
 
-var TestPath = []string{"test", "path"}
-
 var GenericAuthFile = []byte(`{
-    "url": "api.prismacloud.io",
-    "username": "defaultUser",
-    "password": "defaultPassword",
-    "customer_name": "defaultCustomer",
-    "skip_ssl_cert_verification": true,
-    "logging": {"quiet": true}
-}
-`)
+	"url":"localhost",
+	"username":"YOUR_USERNAME",
+	"password":"YOUR_PASSWORD",
+	"port":8083,
+	"skip_ssl_cert_verification":true
+}`)
 
 var LoginBody = `{
-    "customerNames": [
-        {
-            "customerName": "RedLockDemo",
-            "tosAccepted": true
-        },
-        {
-            "customerName": "SESandBox",
-            "tosAccepted": true
-        }
-    ],
     "message": "login_successful",
     "token": "testJwtToken"
 }`
@@ -86,7 +71,7 @@ func MockClient(responses []*http.Response) Client {
 	c.pcResponses = append(c.pcResponses, responses...)
 
 	if len(responses) > 0 {
-		_ = c.Initialize("test")
+		_ = c.Initialize("creds.json")
 	}
 
 	return c
@@ -94,7 +79,7 @@ func MockClient(responses []*http.Response) Client {
 
 func TestLogin(t *testing.T) {
 	c := MockClient(nil)
-	err := c.Initialize("test")
+	err := c.Initialize("creds.json")
 
 	if err != nil {
 		t.Fail()
@@ -103,7 +88,7 @@ func TestLogin(t *testing.T) {
 
 func TestInitializeSetsJwt(t *testing.T) {
 	c := MockClient(nil)
-	_ = c.Initialize("test")
+	_ = c.Initialize("creds.json")
 
 	if c.JsonWebToken == "" {
 		t.Fail()
@@ -116,10 +101,7 @@ func TestInitializeReadsDefaults(t *testing.T) {
 	defer rl()
 
 	c := MockClient(nil)
-	c.Url = "testurl"
-	c.Username = "user"
-	c.Password = "secret"
-	_ = c.Initialize("")
+	_ = c.Initialize("creds.json")
 
 	if c.Protocol == "" {
 		t.Fail()
@@ -164,171 +146,5 @@ func TestLogActionDisabled(t *testing.T) {
 	s := buf.String()
 	if s != "" {
 		t.Fail()
-	}
-}
-
-func TestPathWithQuery(t *testing.T) {
-	var buf bytes.Buffer
-	log.SetOutput(&buf)
-	defer rl()
-
-	c := MockClient(
-		[]*http.Response{
-			OkResponse(""),
-		},
-	)
-	c.Logging[LogPath] = true
-
-	v := url.Values{}
-	v.Set("foo", "bar")
-
-	_, err := c.Communicate("GET", TestPath, v, nil, nil)
-	if err != nil {
-		t.Fail()
-	}
-
-	expected := "path: https://api.prismacloud.io/test/path?foo=bar\n"
-	if buf.String() != expected {
-		t.Errorf("expected:%q  got:%q", expected, buf.String())
-	}
-}
-
-func TestPathWithoutQuery(t *testing.T) {
-	var buf bytes.Buffer
-	log.SetOutput(&buf)
-	defer rl()
-
-	c := MockClient(
-		[]*http.Response{
-			OkResponse(""),
-		},
-	)
-	c.Logging[LogPath] = true
-
-	_, err := c.Communicate("GET", TestPath, nil, nil, nil)
-	if err != nil {
-		t.Fail()
-	}
-
-	expected := "path: https://api.prismacloud.io/test/path\n"
-	if buf.String() != expected {
-		t.Errorf("expected:%q  got:%q", expected, buf.String())
-	}
-}
-
-func TestReauthenticateHappens(t *testing.T) {
-	expected := "okay"
-	c := MockClient(
-		[]*http.Response{
-			ErrorResponse(http.StatusUnauthorized, "", nil),
-			OkResponse(LoginBody),
-			OkResponse(expected),
-		},
-	)
-	c.JsonWebToken = "oldToken"
-
-	body, err := c.Communicate("GET", TestPath, nil, nil, nil)
-	if err != nil {
-		t.Errorf("Failed communicate: %s", err)
-	}
-
-	if string(body) != expected {
-		t.Errorf("expected %q, got %q", expected, string(body))
-	}
-
-	if c.JsonWebToken == "oldToken" {
-		t.Fail()
-	}
-}
-
-func TestAlreadyExists(t *testing.T) {
-	c := MockClient(
-		[]*http.Response{
-			ErrorResponse(
-				http.StatusTeapot,
-				"",
-				PrismaCloudError{
-					Message:  "teapot_already_exists",
-					Severity: "error",
-				},
-			),
-		},
-	)
-
-	_, err := c.Communicate("GET", TestPath, nil, nil, nil)
-	if err == nil {
-		t.Fail()
-	}
-
-	if err != AlreadyExistsError {
-		t.Errorf("error is %s, not %s", err, AlreadyExistsError)
-	}
-}
-
-func TestInvalidCredentialsError(t *testing.T) {
-	c := MockClient(
-		[]*http.Response{
-			ErrorResponse(http.StatusUnauthorized, "", nil),
-			ErrorResponse(http.StatusUnauthorized, "", nil),
-		},
-	)
-
-	_, err := c.Communicate("GET", TestPath, nil, nil, nil)
-	if err == nil {
-		t.Fail()
-	}
-
-	if err != InvalidCredentialsError {
-		t.Errorf("error is %s, not %s", err, InvalidCredentialsError)
-	}
-}
-
-func TestObjectNotFoundError(t *testing.T) {
-	c := MockClient(
-		[]*http.Response{
-			ErrorResponse(
-				http.StatusTeapot,
-				"",
-				PrismaCloudError{
-					Message:  "not_found",
-					Severity: "error",
-				},
-			),
-		},
-	)
-
-	_, err := c.Communicate("GET", TestPath, nil, nil, nil)
-	if err == nil {
-		t.Fail()
-	}
-
-	if err != ObjectNotFoundError {
-		t.Errorf("error is %s, not %s", err, ObjectNotFoundError)
-	}
-}
-
-func TestInvalidResponse(t *testing.T) {
-	expectedHtml := `<html>
-  <body>
-    <p>nope</p>
-  </body>
-</html>`
-	c := MockClient(
-		[]*http.Response{
-			ErrorResponse(http.StatusTeapot, expectedHtml, nil),
-		},
-	)
-
-	data, err := c.Communicate("GET", TestPath, nil, nil, nil)
-	if string(data) != expectedHtml {
-		t.Errorf("Expected:%s got:%s", expectedHtml, data)
-	}
-
-	if err == nil {
-		t.Errorf("No error returned")
-	}
-
-	if !strings.HasSuffix(err.Error(), expectedHtml) {
-		t.Errorf("Error doesn't have expected suffix:\n%s", err)
 	}
 }
