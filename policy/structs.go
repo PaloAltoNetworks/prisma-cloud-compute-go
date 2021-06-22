@@ -58,7 +58,7 @@ type Vulnerability struct {
 
 type CveRule struct {
 	Description		string			`json:"description,omitempty"`
-	Effect			string		`json:"effect,omitempty"`
+	Effect			string			`json:"effect,omitempty"`
 	Id			string			`json:"id,omitempty"`
 	Expiration		Expiration		`json:"expiration,omitempty"`
 }
@@ -79,7 +79,7 @@ type License struct {
 
 type Tag struct {
 	Description		string			`json:"description,omitempty"`
-	Effect			[]string		`json:"effect,omitempty"`
+	Effect			string			`json:"effect,omitempty"`
 	Expiration		[]Expiration		`json:"expiration,omitempty"`
 	Name			string			`json:"name,omitempty"`
 }
@@ -87,12 +87,12 @@ type Tag struct {
 type CustomRule struct {
 	Id			int			`json:"_id,omitempty"`
 	Action         	[]string		`json:"action,omitempty"`
-	Effect         	[]string		`json:"effect,omitempty"`    
+	Effect         	string			`json:"effect,omitempty"`    
 }
 
 type Dns struct {
     	Blacklist		[]string		`json:"blacklist,omitempty"`
-	Effect			[]string		`json:"effect,omitempty"`
+	Effect			string			`json:"effect,omitempty"`
 	Whitelist		[]string		`json:"whitelist,omitempty"`
 }
 
@@ -100,7 +100,7 @@ type Filesystem struct {
 	BackdoorFiles			bool		`json:"backdoorFiles,omitempty"`
 	Blacklist			[]string	`json:"blacklist,omitempty"`
 	CheckNewFiles			bool		`json:"checkNewFiles,omitempty"`
-	Effect				[]string	`json:"effect,omitempty"`
+	Effect				string		`json:"effect,omitempty"`
 	SkipEncryptedBinaries		bool		`json:"skipEncryptedBinaries,omitempty"`
 	SuspiciousELFHeaders		bool		`json:"suspiciousELFHeaders,omitempty"`
 	Whitelist			string		`json:"whitelist,omitempty"`
@@ -111,7 +111,7 @@ type Network struct {
 	BlacklistListeningPorts	[]ListPort	`json:"blacklistListeningPorts,omitempty"`
 	BlacklistOutboundPorts		[]ListPort	`json:"blacklistOutboundPorts,omitempty"`
 	DetectPortScan			bool		`json:"detectPortScan,omitempty"`
-	Effect				[]string	`json:"effect,omitempty"`
+	Effect				string		`json:"effect,omitempty"`
 	SkipModifiedProc		bool		`json:"skipModifiedProc,omitempty"`
 	SkipRawSockets			bool		`json:"skipRawSockets,omitempty"`
 	WhitelistIPs			string		`json:"whitelistIPs,omitempty"`
@@ -128,7 +128,7 @@ type Processes struct {
 	CheckNewBinaries		bool		`json:"checkNewBinaries,omitempty"`
 	CheckParentChild		bool		`json:"checkParentChild,omitempty"`
 	CheckSuidBinaries		bool		`json:"checkSuidBinaries,omitempty"`
-    	Effect				[]string	`json:"effect,omitempty"`
+    	Effect				string		`json:"effect,omitempty"`
 	SkipModified			bool		`json:"skipModified,omitempty"`
 	SkipReverseShell		bool		`json:"skipReverseShell,omitempty"`
     	Whitelist			[]string	`json:"whitelist,omitempty"`
