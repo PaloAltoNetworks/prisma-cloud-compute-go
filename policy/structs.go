@@ -36,7 +36,7 @@ type Rule struct {
 	Owner				string				`json:"owner,omitempty"`
 	PreviousName			string				`json:"previousName,omitempty"`
 	Processes			Processes			`json:"processes,omitempty"`
-	WildFireAnalysis		string			`json:"wildFireAnalysis,omitempty"`    
+	WildFireAnalysis		string				`json:"wildFireAnalysis,omitempty"`    
 }
 
 type Threshold struct {
@@ -114,7 +114,7 @@ type Network struct {
 	Effect				string		`json:"effect,omitempty"`
 	SkipModifiedProc		bool		`json:"skipModifiedProc,omitempty"`
 	SkipRawSockets			bool		`json:"skipRawSockets,omitempty"`
-	WhitelistIPs			string		`json:"whitelistIPs,omitempty"`
+	WhitelistIPs			[]string		`json:"whitelistIPs,omitempty"`
     	WhitelistListeningPorts	[]ListPort	`json:"whitelistListeningPorts,omitempty"`
     	WhitelistOutboundPorts		[]ListPort	`json:"whitelistOutboundPorts,omitempty"`
 }
