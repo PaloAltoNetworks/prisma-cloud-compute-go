@@ -36,7 +36,7 @@ type Rule struct {
 	Owner				string				`json:"owner,omitempty"`
 	PreviousName			string				`json:"previousName,omitempty"`
 	Processes			Processes			`json:"processes,omitempty"`
-	WildFireAnalysis		[]string			`json:"wildFireAnalysis,omitempty"`    
+	WildFireAnalysis		string			`json:"wildFireAnalysis,omitempty"`    
 }
 
 type Threshold struct {
