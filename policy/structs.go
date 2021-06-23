@@ -103,7 +103,7 @@ type Filesystem struct {
 	Effect				string		`json:"effect,omitempty"`
 	SkipEncryptedBinaries		bool		`json:"skipEncryptedBinaries,omitempty"`
 	SuspiciousELFHeaders		bool		`json:"suspiciousELFHeaders,omitempty"`
-	Whitelist			string		`json:"whitelist,omitempty"`
+	Whitelist			[]string	`json:"whitelist,omitempty"`
 }
 
 type Network struct {
@@ -114,7 +114,7 @@ type Network struct {
 	Effect				string		`json:"effect,omitempty"`
 	SkipModifiedProc		bool		`json:"skipModifiedProc,omitempty"`
 	SkipRawSockets			bool		`json:"skipRawSockets,omitempty"`
-	WhitelistIPs			[]string		`json:"whitelistIPs,omitempty"`
+	WhitelistIPs			[]string	`json:"whitelistIPs,omitempty"`
     	WhitelistListeningPorts	[]ListPort	`json:"whitelistListeningPorts,omitempty"`
     	WhitelistOutboundPorts		[]ListPort	`json:"whitelistOutboundPorts,omitempty"`
 }
