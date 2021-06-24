@@ -10,7 +10,7 @@ type Rule struct {
 	AllCompliance			bool				`json:"allCompliance,omitempty"`
 	AuditAllowed			bool				`json:"auditAllowed,omitempty"`
 	BlockMsg			string				`json:"blockMsg,omitempty"`
-	BlockThreshold			Threshold			`json:"alertThreshold,omitempty"`
+	BlockThreshold			Threshold			`json:"blockThreshold,omitempty"`
 	Condition			Condition			`json:"condition,omitempty"`
 	CveRules			[]CveRule			`json:"cveRules,omitempty"`
 	Effect				string				`json:"effect,omitempty"`
