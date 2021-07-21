@@ -3,9 +3,11 @@ package main
 import (
     "fmt"
     "github.com/paloaltonetworks/prisma-cloud-compute-go"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/collection"
+    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy"    
+    "github.com/paloaltonetworks/prisma-cloud-compute-go/collection"
 //    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyRuntimeContainer"
-    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyVulnerabilityImages"
+//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyVulnerabilityImages"
+    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyComplianceContainer"
 )
 
 func main() {
@@ -97,7 +99,7 @@ func main() {
 */
 
 
-    fmt.Printf("\nGET Policy Vulnerability Images:\n")
+/*    fmt.Printf("\nGET Policy Vulnerability Images:\n")
     singlePol, err := policyVulnerabilityImages.Get(client)
     if err != nil {
         fmt.Printf("Failed to get single policy: %s\n", err)
@@ -105,7 +107,7 @@ func main() {
     fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
     
     fmt.Printf("\nUPDATE new Policy:\n")
-    pol := policyVulnerabilityImages.Policy{PolicyId: "My Policy", PolicyType: policyVulnerabilityImages.PolicyTypeContainerVulnerability}	
+    pol := policyVulnerabilityImages.Policy{PolicyId: "My Policy", PolicyType: policy.PolicyTypeContainerVulnerability}	
     err = policyVulnerabilityImages.Update(client, pol)
     if err != nil {
         fmt.Printf("Failed to get policies: %s\n", err)
@@ -113,6 +115,39 @@ func main() {
 
     fmt.Printf("\nGET Policy:\n")
     singlePol, err = policyVulnerabilityImages.Get(client)
+    if err != nil {
+        fmt.Printf("Failed to get single policy: %s\n", err)
+    }
+    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
+
+}*/
+
+    fmt.Printf("\nCREATE new Policy Compliance Container:\n")
+    coll := collection.Collection{Name: "All"}	
+    rule := policy.Rule{Name: "my-rule", Collections: []collection.Collection{coll}}
+    rules := []policy.Rule{rule}
+    pol := policyComplianceContainer.Policy{PolicyType: policy.PolicyTypeContainerCompliance, Rules: rules}	
+    err := policyComplianceContainer.Create(client, pol)
+    if err != nil {
+        fmt.Printf("Failed to get policies: %s\n", err)
+    }
+
+    fmt.Printf("\nGET Policy Compliance Container:\n")
+    singlePol, err := policyComplianceContainer.Get(client)
+    if err != nil {
+        fmt.Printf("Failed to get single policy: %s\n", err)
+    }
+    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
+    
+    fmt.Printf("\nUPDATE new Policy:\n")
+    pol = policyComplianceContainer.Policy{PolicyId: "My Policy", PolicyType: policy.PolicyTypeContainerCompliance}	
+    err = policyComplianceContainer.Update(client, pol)
+    if err != nil {
+        fmt.Printf("Failed to get policies: %s\n", err)
+    }
+
+    fmt.Printf("\nGET Policy:\n")
+    singlePol, err = policyComplianceContainer.Get(client)
     if err != nil {
         fmt.Printf("Failed to get single policy: %s\n", err)
     }
