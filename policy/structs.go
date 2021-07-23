@@ -52,8 +52,9 @@ type Condition struct {
 }
 
 type Vulnerability struct {
-	Block			bool			`json:"block,omitempty"`
+	Block			bool			`json:"block"`
 	Id			int			`json:"id,omitempty"`
+	MinSeverity			int			`json:"minSeverity,omitempty"`
 }
 
 type CveRule struct {

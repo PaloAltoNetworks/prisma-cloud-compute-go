@@ -298,6 +298,7 @@ func (c *Client) communicate(method string, suffix []string, query, data interfa
 		req.Header.Add("Authorization", bearer)
 	}
 
+	        fmt.Printf("Request: %+v\n", req)
 	resp, err := c.do(req)
 	if err != nil {
 		return nil, err

@@ -122,9 +122,11 @@ func main() {
 
 }*/
 
-    fmt.Printf("\nCREATE new Policy Compliance Container:\n")
+    fmt.Printf("\nCREATE new Policy Compliance Container:\n")    
     coll := collection.Collection{Name: "All"}	
-    rule := policy.Rule{Name: "my-rule", Collections: []collection.Collection{coll}}
+    vuln := policy.Vulnerability{Id: 531, Block: false}
+    cond := policy.Condition{Vulnerabilities: []policy.Vulnerability{vuln}}
+    rule := policy.Rule{Name: "my-rule", Effect: policy.EffectAlert, Collections: []collection.Collection{coll}, Condition: cond}
     rules := []policy.Rule{rule}
     pol := policyComplianceContainer.Policy{PolicyType: policy.PolicyTypeContainerCompliance, Rules: rules}	
     err := policyComplianceContainer.Create(client, pol)
