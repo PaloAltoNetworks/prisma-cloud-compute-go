@@ -142,7 +142,7 @@ func main() {
     fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
     
     fmt.Printf("\nUPDATE new Policy:\n")
-    pol = policyComplianceContainer.Policy{PolicyId: "My Policy", PolicyType: policy.PolicyTypeContainerCompliance}	
+    pol.Rules[0].Condition.Vulnerabilities[0].Id = 41	
     err = policyComplianceContainer.Update(client, pol)
     if err != nil {
         fmt.Printf("Failed to get policies: %s\n", err)
@@ -154,5 +154,4 @@ func main() {
         fmt.Printf("Failed to get single policy: %s\n", err)
     }
     fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-
 }
