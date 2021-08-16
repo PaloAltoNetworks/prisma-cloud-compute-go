@@ -27,13 +27,13 @@ import (
 
 func main() {
     client := &prismacloudcompute.Client{}
-    
+
     if err := client.Initialize("creds.json"); err != nil {
         fmt.Printf("Failed to connect: %s\n", err)
     }
-    
+
     fmt.Printf("\nCREATE new Collection:\n")
-    coll := collection.Collection{Name: "My Collection"}	
+    coll := collection.Collection{Name: "My Collection"}
     err := collection.Create(client, coll)
     if err != nil {
         fmt.Printf("Failed to get collections: %s\n", err)
@@ -48,9 +48,9 @@ func main() {
     for _, elm := range listing {
         fmt.Printf("* %s   %s\n", elm.Name, elm.Color)
     }
-    
+
     fmt.Printf("\nUPDATE new Collection:\n")
-    coll = collection.Collection{Name: "My Collection", Color: "#FFFFFF"}	
+    coll = collection.Collection{Name: "My Collection", Color: "#FFFFFF"}
     err = collection.Update(client, coll)
     if err != nil {
         fmt.Printf("Failed to get collections: %s\n", err)

@@ -5,7 +5,7 @@ import (
 )
 
 type Policy struct {
-	PolicyId                   string               `json:"_id,omitempty"`
-	PolicyType                 string		`json:"policyType,omitempty"`    
-	Rules                      []policy.Rule        `json:"rules,omitempty"`    
+	PolicyId   string        `json:"_id,omitempty"`
+	PolicyType string        `json:"policyType,omitempty"`
+	Rules      []policy.Rule `json:"rules,omitempty"`
 }

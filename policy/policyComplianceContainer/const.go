@@ -4,4 +4,4 @@ const (
 	singular = "policyComplianceContainer"
 )
 
-var Suffix = []string{"policies","compliance","container"}
+var Suffix = []string{"policies", "compliance", "container"}

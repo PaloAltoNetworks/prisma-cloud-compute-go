@@ -161,8 +161,8 @@ func (c *Client) Authenticate() error {
 	var err error
 
 	type initial struct {
-		Username     string `json:"username"`
-		Password     string `json:"password"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
 
 	ans := AuthResponse{}
@@ -256,7 +256,7 @@ func (c *Client) communicate(method string, suffix []string, query, data interfa
 	var err error
 	var buf bytes.Buffer
 
-	var suffixFull = append([]string{"api","v1"},suffix...)
+	var suffixFull = append([]string{"api", "v1"}, suffix...)
 
 	if data != nil {
 		b, err := json.Marshal(data)
@@ -284,7 +284,7 @@ func (c *Client) communicate(method string, suffix []string, query, data interfa
 	}
 	c.Log(LogPath, "path: %s", path.String())
 
-        fmt.Printf("Connecting to: %s\n", path.String())
+	fmt.Printf("Connecting to: %s\n", path.String())
 
 	req, err := http.NewRequest(method, path.String(), &buf)
 	if err != nil {
@@ -293,12 +293,12 @@ func (c *Client) communicate(method string, suffix []string, query, data interfa
 
 	req.Header.Set("Content-Type", "application/json")
 	if c.JsonWebToken != "" {
-//		req.Header.Set("x-redlock-auth", c.JsonWebToken)
+		//		req.Header.Set("x-redlock-auth", c.JsonWebToken)
 		var bearer = "Bearer " + c.JsonWebToken
 		req.Header.Add("Authorization", bearer)
 	}
 
-	        fmt.Printf("Request: %+v\n", req)
+	fmt.Printf("Request: %+v\n", req)
 	resp, err := c.do(req)
 	if err != nil {
 		return nil, err
@@ -314,9 +314,9 @@ func (c *Client) communicate(method string, suffix []string, query, data interfa
 	switch resp.StatusCode {
 	case http.StatusOK, http.StatusNoContent:
 		// Alert rule deletion returns StatusNoContent
-	        fmt.Printf("Status: StatusOK or StatusNoContent\n")
+		fmt.Printf("Status: StatusOK or StatusNoContent\n")
 	case http.StatusUnauthorized:
-	        fmt.Printf("Status: StatusUnauthorized\n")
+		fmt.Printf("Status: StatusUnauthorized\n")
 		if !c.DisableReconnect && allowRetry {
 			if err = c.Authenticate(); err == nil {
 				return c.communicate(method, suffix, query, data, ans, false)
@@ -324,7 +324,7 @@ func (c *Client) communicate(method string, suffix []string, query, data interfa
 		}
 		return body, InvalidCredentialsError
 	default:
-	        fmt.Printf("Status: default\n")
+		fmt.Printf("Status: default\n")
 		errLocation := "X-Redlock-Status"
 		if _, ok := resp.Header[errLocation]; !ok {
 			return body, fmt.Errorf("%d error without the %q header - returned HTML:\n%s", resp.StatusCode, errLocation, body)
