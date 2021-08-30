@@ -10,9 +10,10 @@ import (
 //    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyComplianceContainer"
 //    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyVulnerabilityCiImages"
 //    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyComplianceCiImages"
-    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyRuntimeHost"
+//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyRuntimeHost"
 //    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyVulnerabilityHost"
 //    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyComplianceHost"
+    "github.com/paloaltonetworks/prisma-cloud-compute-go/settings/registry/settingsRegistry"
 )
 
 func main() {
@@ -236,7 +237,7 @@ func main() {
     fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.Rules)
 }
 */
-
+/*
     fmt.Printf("\nCREATE new Policy Runtime Host:\n")    
     coll := collection.Collection{Name: "All"}	
     forensic := policy.Forensic{
@@ -295,7 +296,7 @@ func main() {
         fmt.Printf("Failed to get single policy: %s\n", err)
     }
     fmt.Printf("* %s   %s\n", singlePol.PolicyId)
-
+*/
 
 /*    fmt.Printf("\nCREATE new Policy Vulnerability Host:\n")    
     coll := collection.Collection{Name: "All"}	
@@ -393,6 +394,57 @@ func main() {
         fmt.Printf("Failed to get single policy: %s\n", err)
     }
     fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
+*/
+
+    fmt.Printf("\nCREATE new Registry:\n")
+    coll := collection.Collection{Name: "All"}	
+    specifications := settingsRegistry.Specifications{
+    	Version: "2",
+	Registry: "",
+	Os: "linux",
+	Cap: 5,
+	Scanners: 2,
+	JfrogRepoTypes: []string{},
+        Repository: "library/ubuntu",
+        Tag: "20.04",
+        Collections: []collection.Collection{coll},
+    }
+    
+    reg := settingsRegistry.SettingsRegistry{specifications: specifications}	
+    err := settingsRegistry.Create(client, reg)
+    if err != nil {
+        fmt.Printf("Failed to get registry: %s\n", err)
+    }
+
+    fmt.Printf("\nGET single registry:\n")
+    singleReg, err := settingsRegistry.Get(client)
+    if err != nil {
+        fmt.Printf("Failed to get single registry: %s\n", err)
+    }
+    fmt.Printf("* %s", singleReg.Name)
+    
+/*    fmt.Printf("\nUPDATE new Registry:\n")
+    coll = collection.Collection{Name: "My Registry", Color: "#FFFFFF"}	
+    err = collection.Update(client, coll)
+    if err != nil {
+        fmt.Printf("Failed to get Registry: %s\n", err)
+    }
+
+    fmt.Printf("GET Registry List:\n")
+    listing, err = collection.List(client)
+    if err != nil {
+        fmt.Printf("Failed to get registry: %s\n", err)
+    }
+
+    for _, elm := range listing {
+        fmt.Printf("* %s   %s\n", elm.Name, elm.Color)
+    }
+
+    fmt.Printf("\nDELETE added Collection:\n")
+    err = collection.Delete(client, "My Collection")
+    if err != nil {
+        fmt.Printf("Failed to get collections: %s\n", err)
+    }
 */
     
 }

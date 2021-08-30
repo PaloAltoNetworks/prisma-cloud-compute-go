@@ -6,7 +6,7 @@ import (
 
 type Rule struct {
 	AntiMalware              AntiMalware             `json:"antiMalware,omitempty"`
-	FileIntegrityRules       []FileIntegrityRules    `json:"fileIntegrityRules,omitempty"`
+	FileIntegrityRules       []FileIntegrityRule    `json:"fileIntegrityRules,omitempty"`
 	Forensic                 Forensic                `json:"forensic,omitempty"`
 	LogInspectionRules       []LogInspectionRules    `json:"logInspectionRules,omitempty"`
 	Action                   []string                `json:"action,omitempty"`
@@ -43,7 +43,7 @@ type Rule struct {
 	WildFireAnalysis         string                  `json:"wildFireAnalysis,omitempty"`
 }
 
-type FileIntegrityRules struct {
+type FileIntegrityRule struct {
 	Dir           bool     `json:"dir"`
 	Exclusions    []string `json:"exclusions,omitempty"`
 	Metadata      bool     `json:"metadata"`
