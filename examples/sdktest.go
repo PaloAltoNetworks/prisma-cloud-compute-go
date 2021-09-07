@@ -1,450 +1,478 @@
 package main
 
 import (
-    "fmt"
-    "github.com/paloaltonetworks/prisma-cloud-compute-go"
-    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy"    
-    "github.com/paloaltonetworks/prisma-cloud-compute-go/collection"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyRuntimeContainer"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyVulnerabilityImages"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyComplianceContainer"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyVulnerabilityCiImages"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyComplianceCiImages"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyRuntimeHost"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyVulnerabilityHost"
-//    "github.com/paloaltonetworks/prisma-cloud-compute-go/policy/policyComplianceHost"
-    "github.com/paloaltonetworks/prisma-cloud-compute-go/settings/registry/settingsRegistry"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+
+	pcc "github.com/paloaltonetworks/prisma-cloud-compute-go"
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/collections"
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/policies"
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/settings/registry"
 )
 
 func main() {
-    client := &prismacloudcompute.Client{}
-    
-    if err := client.Initialize("creds.json"); err != nil {
-        fmt.Printf("Failed to connect: %s\n", err)
-    }
+	credsFile, err := os.Open("creds.json")
+	if err != nil {
+		fmt.Printf("error opening creds file: %v", err)
+	}
+	defer credsFile.Close()
 
-/*    
-    fmt.Printf("\nCREATE new Collection:\n")
-    coll := collection.Collection{Name: "My Collection"}	
-    err := collection.Create(client, coll)
-    if err != nil {
-        fmt.Printf("Failed to get collections: %s\n", err)
-    }
+	fileContent, err := ioutil.ReadAll(credsFile)
+	if err != nil {
+		fmt.Printf("error reading creds file: %v", err)
+		return
+	}
+	var creds pcc.Credentials
+	if err := json.Unmarshal(fileContent, &creds); err != nil {
+		fmt.Printf("error unmarshalling creds file: %v", err)
+		return
+	}
 
-    fmt.Printf("GET Collections List:\n")
-    listing, err := collection.List(client)
-    if err != nil {
-        fmt.Printf("Failed to get collections: %s\n", err)
-    }
+	client, err := pcc.APIClient(creds.ConsoleURL, creds.Username, creds.Password, creds.SkipCertVerification)
+	if err != nil {
+		fmt.Printf("Failed creating API client")
+		return
+	}
 
-    for _, elm := range listing {
-        fmt.Printf("* %s   %s\n", elm.Name, elm.Color)
-    }
-    
-    fmt.Printf("\nGET single Collection:\n")
-    singleColl, err := collection.Get(client, "My Collection")
-    if err != nil {
-        fmt.Printf("Failed to get single collection: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singleColl.Name, singleColl.Color)
-    
-    fmt.Printf("\nUPDATE new Collection:\n")
-    coll = collection.Collection{Name: "My Collection", Color: "#FFFFFF"}	
-    err = collection.Update(client, coll)
-    if err != nil {
-        fmt.Printf("Failed to get collections: %s\n", err)
-    }
+	/*
+		COLLECTIONS
+	*/
+	fmt.Printf("create collection\n")
+	newColl := collections.Collection{Name: "My Collection"}
+	err = collections.Create(*client, newColl)
+	if err != nil {
+		fmt.Printf("Failed to create collections: %s\n", err)
+		return
+	}
 
-    fmt.Printf("GET Collections List:\n")
-    listing, err = collection.List(client)
-    if err != nil {
-        fmt.Printf("Failed to get collections: %s\n", err)
-    }
+	fmt.Printf("\nlist collections:\n")
+	colls, err := collections.List(*client)
+	if err != nil {
+		fmt.Printf("Failed to list collections: %s\n", err)
+	}
 
-    for _, elm := range listing {
-        fmt.Printf("* %s   %s\n", elm.Name, elm.Color)
-    }
+	for _, v := range colls {
+		fmt.Printf("* %s %s\n", v.Name, v.Color)
+	}
 
-    fmt.Printf("\nDELETE added Collection:\n")
-    err = collection.Delete(client, "My Collection")
-    if err != nil {
-        fmt.Printf("Failed to get collections: %s\n", err)
-    }
+	fmt.Printf("\nget collection:\n")
+	coll, err := collections.Get(*client, "My Collection")
+	if err != nil {
+		fmt.Printf("Failed to get collection: %s\n", err)
+	}
+	fmt.Printf("* %s %s\n", coll.Name, coll.Color)
 
-    fmt.Printf("GET Collections List:\n")
-    listing, err = collection.List(client)
-    if err != nil {
-        fmt.Printf("Failed to get collections: %s\n", err)
-    }
+	fmt.Printf("\nupdate collection\n")
+	existingColl := collections.Collection{Name: "My Collection", Color: "#FFFFFF"}
+	err = collections.Update(*client, existingColl)
+	if err != nil {
+		fmt.Printf("Failed to update collection: %s\n", err)
+	}
 
-    for _, elm := range listing {
-        fmt.Printf("* %s\n", elm.Name)
-    }
- */
+	fmt.Printf("\nlist collections:\n")
+	colls, err = collections.List(*client)
+	if err != nil {
+		fmt.Printf("Failed to list collections: %s\n", err)
+	}
 
-/*    fmt.Printf("\nGET Policy Runtime Container:\n")
-    singlePol, err := policyRuntimeContainer.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.LearningDisabled)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    pol := policyRuntimeContainer.Policy{PolicyId: "My Policy", LearningDisabled: false}	
-    err = policyRuntimeContainer.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	for _, v := range colls {
+		fmt.Printf("* %s %s\n", v.Name, v.Color)
+	}
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyRuntimeContainer.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.LearningDisabled)
-*/
+	fmt.Printf("\ndelete collection\n")
+	err = collections.Delete(*client, "My Collection")
+	if err != nil {
+		fmt.Printf("Failed to delete collection: %s\n", err)
+	}
 
+	fmt.Printf("\nlist collections:\n")
+	colls, err = collections.List(*client)
+	if err != nil {
+		fmt.Printf("Failed to list collections: %s\n", err)
+	}
 
-/*    fmt.Printf("\nGET Policy Vulnerability Images:\n")
-    singlePol, err := policyVulnerabilityImages.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    pol := policyVulnerabilityImages.Policy{PolicyId: "My Policy", PolicyType: policy.PolicyTypeContainerVulnerability}	
-    err = policyVulnerabilityImages.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	for _, v := range colls {
+		fmt.Printf("* %s %s\n", v.Name, v.Color)
+	}
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyVulnerabilityImages.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
+	/*
+		CI IMAGE COMPLIANCE
+	*/
+	complianceCiImageColl := collections.Collection{Name: "All"}
+	complianceCiImageVuln1 := policies.Vulnerability{Id: 41, Block: false}
+	complianceCiImageVuln2 := policies.Vulnerability{Id: 422, Block: true}
+	complianceCiImageCondition := policies.Condition{Vulnerabilities: []policies.Vulnerability{complianceCiImageVuln1, complianceCiImageVuln2}}
+	complianceCiImageRule := policies.Rule{Name: "example ci image compliance rule", Effect: "alert, block", Collections: []collections.Collection{complianceCiImageColl}, Condition: complianceCiImageCondition}
+	complianceCiImageRules := []policies.Rule{complianceCiImageRule}
+	complianceCiImagePolicy := policies.Policy{PolicyType: "ciImagesCompliance", Rules: complianceCiImageRules}
 
-}*/
+	fmt.Printf("\nupdate CI image compliance policy\n")
+	complianceCiImageErr := policies.Update(*client, policies.ComplianceCiImagesEndpoint, complianceCiImagePolicy)
+	if complianceCiImageErr != nil {
+		fmt.Printf("\nFailed to update CI image compliance policy: %v\n", complianceCiImageErr)
+	}
 
-/*    fmt.Printf("\nCREATE new Policy Compliance Container:\n")    
-    coll := collection.Collection{Name: "All"}	
-    vuln := policy.Vulnerability{Id: 531, Block: false}
-    cond := policy.Condition{Vulnerabilities: []policy.Vulnerability{vuln}}
-    rule := policy.Rule{Name: "my-rule", Effect: policy.EffectAlert, Collections: []collection.Collection{coll}, Condition: cond}
-    rules := []policy.Rule{rule}
-    pol := policyComplianceContainer.Policy{PolicyType: policy.PolicyTypeContainerCompliance, Rules: rules}	
-    err := policyComplianceContainer.Create(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nget CI image compliance policy:\n")
+	retrievedPolicy, complianceCiImageErr := policies.Get(*client, policies.ComplianceCiImagesEndpoint)
+	if complianceCiImageErr != nil {
+		fmt.Printf("failed to get CI image compliance policy: %s\n", complianceCiImageErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-    fmt.Printf("\nGET Policy Compliance Container:\n")
-    singlePol, err := policyComplianceContainer.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    pol.Rules[0].Condition.Vulnerabilities[0].Id = 41	
-    err = policyComplianceContainer.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nupdate CI image compliance policy\n")
+	complianceCiImageRule.Name = "name change"
+	complianceCiImagePolicy = policies.Policy{PolicyType: "ciImagesCompliance", Rules: []policies.Rule{complianceCiImageRule}}
+	complianceCiImageErr = policies.Update(*client, policies.ComplianceCiImagesEndpoint, complianceCiImagePolicy)
+	if complianceCiImageErr != nil {
+		fmt.Printf("failed to update CI image compliance policy: %s\n", complianceCiImageErr)
+	}
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyComplianceContainer.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-*/    
-/*    
-    policyName := "example ci image vulnerability rule"
-    coll := collection.Collection{Name: "All"}	
-    alert := policy.Threshold{Value: 1, Disabled: false}
-    block := policy.Threshold{Value: 0, Enabled: false}    
-    rule := policy.Rule{Name: policyName, Effect: policy.EffectAlert, Collections: []collection.Collection{coll}, AlertThreshold: alert, BlockThreshold: block}
-    rules := []policy.Rule{rule}
-    pol := policyVulnerabilityCiImages.Policy{PolicyType: policy.PolicyTypeCiImagesVulnerability, Rules: rules}	
-    err := policyVulnerabilityCiImages.Create(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
-    
-    fmt.Printf("\nGET Policy Vulnerability CI Images:\n")
-    singlePol, err := policyVulnerabilityCiImages.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.Rules[0].Name)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    rule.Name = "name change"
-    pol = policyVulnerabilityCiImages.Policy{PolicyType: policy.PolicyTypeCiImagesVulnerability, Rules: []policy.Rule{rule}}	
-    err = policyVulnerabilityCiImages.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nget CI image compliance policy:\n")
+	retrievedPolicy, complianceCiImageErr = policies.Get(*client, policies.ComplianceCiImagesEndpoint)
+	if complianceCiImageErr != nil {
+		fmt.Printf("failed to get CI image compliance policy: %s\n", complianceCiImageErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyVulnerabilityCiImages.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.Rules)
-*/
+	/*
+		CONTAINER COMPLIANCE
+	*/
+	complianceContainerColl := collections.Collection{Name: "All"}
+	complianceContainerVuln1 := policies.Vulnerability{Id: 41, Block: false}
+	complianceContainerVuln2 := policies.Vulnerability{Id: 422, Block: true}
+	complianceContainerCondition := policies.Condition{Vulnerabilities: []policies.Vulnerability{complianceContainerVuln1, complianceContainerVuln2}}
+	complianceContainerRule := policies.Rule{Name: "example container compliance rule", Effect: "alert, block", Collections: []collections.Collection{complianceContainerColl}, Condition: complianceContainerCondition}
+	complianceContainerRules := []policies.Rule{complianceContainerRule}
+	complianceContainerPolicy := policies.Policy{PolicyType: "containerCompliance", Rules: complianceContainerRules}
 
-/*    coll := collection.Collection{Name: "All"}	
-    vuln1 := policy.Vulnerability{Id: 41, Block: false}
-    vuln2 := policy.Vulnerability{Id: 422, Block: false}
-    vuln3 := policy.Vulnerability{Id: 424, Block: false}
-    vuln4 := policy.Vulnerability{Id: 425, Block: false}
-    vuln5 := policy.Vulnerability{Id: 426, Block: false}
-    vuln6 := policy.Vulnerability{Id: 448, Block: false}
-    vuln7 := policy.Vulnerability{Id: 5041, Block: false}
-    cond := policy.Condition{Vulnerabilities: []policy.Vulnerability{vuln1, vuln2, vuln3, vuln4, vuln5, vuln6, vuln7}}
-    rule := policy.Rule{Name: "example ci image compliance rule", Effect: policy.EffectAlert, Collections: []collection.Collection{coll}, Condition: cond}
-    rules := []policy.Rule{rule}
-    pol := policyComplianceCiImages.Policy{PolicyType: policy.PolicyTypeCiImagesCompliance, Rules: rules}	
-    err := policyComplianceCiImages.Create(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
-    
-    fmt.Printf("\nGET Policy Compliance CI Images:\n")
-    singlePol, err := policyComplianceCiImages.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.Rules[0].Name)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    rule.Name = "name change"
-    pol = policyComplianceCiImages.Policy{PolicyType: policy.PolicyTypeCiImagesCompliance, Rules: []policy.Rule{rule}}	
-    err = policyComplianceCiImages.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nupdate container compliance policy\n")
+	complianceContainerErr := policies.Update(*client, policies.ComplianceContainerEndpoint, complianceContainerPolicy)
+	if complianceContainerErr != nil {
+		fmt.Printf("\nFailed to update container compliance policy: %v\n", complianceContainerErr)
+	}
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyComplianceCiImages.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.Rules)
-}
-*/
-/*
-    fmt.Printf("\nCREATE new Policy Runtime Host:\n")    
-    coll := collection.Collection{Name: "All"}	
-    forensic := policy.Forensic{
-    	ActivitiesDisabled: false,
-    	SshdEnabled: false,
-    	SudoEnabled: false,
-    	ServiceActivitiesEnabled: false,
-    	DockerEnabled: false,
-    	ReadonlyDockerEnabled: false,
-    	}
-    network := policy.Network{DenyListEffect: policy.EffectAlert, CustomFeed: policy.EffectAlert, IntelligenceFeed: policy.EffectAlert}	
-    dns := policy.Dns{DenyListEffect: policy.EffectDisable, IntelligenceFeed: "disable"}	
-    	    	
-    deniedProcesses := policy.DeniedProcesses{Effect: "alert"}
-    antiMalware := policy.AntiMalware{
-    		DeniedProcesses: deniedProcesses,
-                CryptoMiner: "alert",
-                ServiceUnknownOriginBinary: "alert",
-                UserUnknownOriginBinary: "alert",
-                EncryptedBinaries: "alert",
-                SuspiciousELFHeaders: "alert",
-                TempFSProc: "alert",
-                ReverseShell: "alert",
-                WebShell: "alert",
-                ExecutionFlowHijack: "alert",
-                CustomFeed: "alert",
-                IntelligenceFeed: "alert",
-                WildFireAnalysis: "alert",
-    }
-    
-    rule := policy.Rule{Name: "example host runtime rule 1", Collections: []collection.Collection{coll}, Forensic: forensic, Network: network, Dns: dns, AntiMalware: antiMalware}
-    rules := []policy.Rule{rule}
-    pol := policyRuntimeHost.Policy{Rules: rules}	
-    err := policyRuntimeHost.Create(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nget container compliance policy:\n")
+	retrievedPolicy, complianceContainerErr = policies.Get(*client, policies.ComplianceContainerEndpoint)
+	if complianceContainerErr != nil {
+		fmt.Printf("failed to get container compliance policy: %s\n", complianceContainerErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-    fmt.Printf("\nGET Policy Runtime Host:\n")
-    singlePol, err := policyRuntimeHost.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    pol.Rules[0].Condition.Vulnerabilities[0].Id = 41	
-    err = policyRuntimeHost.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nupdate container compliance policy\n")
+	complianceContainerRule.Name = "name change"
+	complianceContainerPolicy = policies.Policy{PolicyType: "containerCompliance", Rules: []policies.Rule{complianceContainerRule}}
+	complianceContainerErr = policies.Update(*client, policies.ComplianceContainerEndpoint, complianceContainerPolicy)
+	if complianceContainerErr != nil {
+		fmt.Printf("failed to update container compliance policy: %s\n", complianceContainerErr)
+	}
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyRuntimeHost.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId)
-*/
+	fmt.Printf("\nget container compliance policy:\n")
+	retrievedPolicy, complianceContainerErr = policies.Get(*client, policies.ComplianceContainerEndpoint)
+	if complianceContainerErr != nil {
+		fmt.Printf("failed to get container compliance policy: %s\n", complianceContainerErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-/*    fmt.Printf("\nCREATE new Policy Vulnerability Host:\n")    
-    coll := collection.Collection{Name: "All"}	
-    cond := policy.Condition{Vulnerabilities: []policy.Vulnerability{}}
-    action := []string{"*"}
-    group := []string{"*"}
-    alertThresh := policy.Threshold{Value: 1, Disabled: false}
-    blockThresh := policy.Threshold{Value: 0, Disabled: false}    
-    
-    rule := policy.Rule{
-    	Name: "example host vulnerability rule 1", 
-    	Effect: policy.EffectAlert, 
-    	Collections: []collection.Collection{coll}, 
-    	Condition: cond,
-        Verbose: false,
-        AllCompliance: false,
-        OnlyFixed: false,
-        CveRules: []policy.CveRule{},
-        Tags: []policy.Tag{},
-        Action: action,
-        BlockMsg: "",
-        Principal: []string{},
-        Group: group,
-        AlertThreshold: alertThresh,
-        BlockThreshold: blockThresh,    	
-    }
-    rules := []policy.Rule{rule}
-    pol := policyVulnerabilityHost.Policy{PolicyType: policy.PolicyTypeHostVulnerability, Rules: rules}	
-    err := policyVulnerabilityHost.Create(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	/*
+		HOST COMPLIANCE
+	*/
+	complianceHostColl := collections.Collection{Name: "All"}
+	complianceHostVuln1 := policies.Vulnerability{Id: 11, Block: false}
+	complianceHostVuln2 := policies.Vulnerability{Id: 112, Block: true}
+	complianceHostCondition := policies.Condition{Vulnerabilities: []policies.Vulnerability{complianceHostVuln1, complianceHostVuln2}}
+	complianceHostRule := policies.Rule{Name: "example host compliance rule", Effect: "alert, block", Collections: []collections.Collection{complianceHostColl}, Condition: complianceHostCondition}
+	complianceHostRules := []policies.Rule{complianceHostRule}
+	complianceHostPolicy := policies.Policy{PolicyType: "hostCompliance", Rules: complianceHostRules}
 
-    fmt.Printf("\nGET Policy Vulnerability Host:\n")
-    singlePol, err := policyVulnerabilityHost.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    pol.Rules[0].Effect = policy.EffectBlock	
-    err = policyVulnerabilityHost.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nupdate host compliance policy\n")
+	complianceHostErr := policies.Update(*client, policies.ComplianceHostEndpoint, complianceHostPolicy)
+	if complianceHostErr != nil {
+		fmt.Printf("\nFailed to update host compliance policy: %v\n", complianceHostErr)
+	}
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyVulnerabilityHost.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-*/
+	fmt.Printf("\nget host compliance policy:\n")
+	retrievedPolicy, complianceHostErr = policies.Get(*client, policies.ComplianceHostEndpoint)
+	if complianceHostErr != nil {
+		fmt.Printf("failed to get host compliance policy: %s\n", complianceHostErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-/*
-    fmt.Printf("\nCREATE new Policy Compliance Host:\n")    
-    coll := collection.Collection{Name: "All"}	
-    vuln1 := policy.Vulnerability{Id: 11, Block: false}
-    vuln2 := policy.Vulnerability{Id: 111, Block: true}
-    cond := policy.Condition{Vulnerabilities: []policy.Vulnerability{vuln1, vuln2}}
-    
-    rule := policy.Rule{
-    	Name: "example host compliance rule 1", 
-    	Effect: policy.EffectAlert, 
-    	Collections: []collection.Collection{coll}, 
-    	Condition: cond,
-        BlockMsg: "",
-        Verbose: false,
-    }
-    rules := []policy.Rule{rule}
-    pol := policyComplianceHost.Policy{PolicyType: policy.PolicyTypeHostCompliance, Rules: rules}	
-    err := policyComplianceHost.Create(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nupdate host compliance policy\n")
+	complianceHostRule.Name = "name change"
+	complianceHostPolicy = policies.Policy{PolicyType: "hostCompliance", Rules: []policies.Rule{complianceHostRule}}
+	complianceHostErr = policies.Update(*client, policies.ComplianceHostEndpoint, complianceHostPolicy)
+	if complianceHostErr != nil {
+		fmt.Printf("failed to update host compliance policy: %s\n", complianceHostErr)
+	}
 
-    fmt.Printf("\nGET Policy Compliance Host:\n")
-    singlePol, err := policyComplianceHost.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-    
-    fmt.Printf("\nUPDATE new Policy:\n")
-    pol.Rules[0].Effect = policy.EffectBlock	
-    err = policyComplianceHost.Update(client, pol)
-    if err != nil {
-        fmt.Printf("Failed to get policies: %s\n", err)
-    }
+	fmt.Printf("\nget host compliance policy:\n")
+	retrievedPolicy, complianceHostErr = policies.Get(*client, policies.ComplianceHostEndpoint)
+	if complianceHostErr != nil {
+		fmt.Printf("failed to get host compliance policy: %s\n", complianceHostErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-    fmt.Printf("\nGET Policy:\n")
-    singlePol, err = policyComplianceHost.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single policy: %s\n", err)
-    }
-    fmt.Printf("* %s   %s\n", singlePol.PolicyId, singlePol.PolicyType)
-*/
+	/*
+		CONTAINER RUNTIME
+	*/
+	runtimeContainerColl := collections.Collection{Name: "All"}
+	runtimeContainerRule := policies.Rule{
+		Name:               "example container runtime rule",
+		Collections:        []collections.Collection{runtimeContainerColl},
+		AdvancedProtection: true,
+		Dns:                policies.Dns{Effect: "disable"},
+		Filesystem:         policies.Filesystem{Effect: "alert"},
+		Network:            policies.Network{Effect: "alert"},
+		Processes:          policies.Processes{Effect: "alert"},
+		WildFireAnalysis:   "alert",
+	}
+	runtimeContainerRules := []policies.Rule{runtimeContainerRule}
+	runtimeContainerPolicy := policies.Policy{LearningDisabled: false, Rules: runtimeContainerRules}
 
-    fmt.Printf("\nCREATE new Registry:\n")
-    coll := collection.Collection{Name: "All"}	
-    specifications := settingsRegistry.Specifications{
-    	Version: "2",
-	Registry: "",
-	Os: "linux",
-	Cap: 5,
-	Scanners: 2,
-	JfrogRepoTypes: []string{},
-        Repository: "library/ubuntu",
-        Tag: "20.04",
-        Collections: []collection.Collection{coll},
-    }
-    
-    reg := settingsRegistry.SettingsRegistry{specifications: specifications}	
-    err := settingsRegistry.Create(client, reg)
-    if err != nil {
-        fmt.Printf("Failed to get registry: %s\n", err)
-    }
+	fmt.Printf("\nupdate container runtime policy\n")
+	runtimeContainerErr := policies.Update(*client, policies.RuntimeContainerEndpoint, runtimeContainerPolicy)
+	if runtimeContainerErr != nil {
+		fmt.Printf("\nfailed to update container runtime policy: %v\n", runtimeContainerErr)
+	}
 
-    fmt.Printf("\nGET single registry:\n")
-    singleReg, err := settingsRegistry.Get(client)
-    if err != nil {
-        fmt.Printf("Failed to get single registry: %s\n", err)
-    }
-    fmt.Printf("* %s", singleReg.Name)
-    
-/*    fmt.Printf("\nUPDATE new Registry:\n")
-    coll = collection.Collection{Name: "My Registry", Color: "#FFFFFF"}	
-    err = collection.Update(client, coll)
-    if err != nil {
-        fmt.Printf("Failed to get Registry: %s\n", err)
-    }
+	fmt.Printf("\nget container runtime policy:\n")
+	retrievedPolicy, runtimeContainerErr = policies.Get(*client, policies.RuntimeContainerEndpoint)
+	if runtimeContainerErr != nil {
+		fmt.Printf("failed to get container runtime policy: %s\n", runtimeContainerErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-    fmt.Printf("GET Registry List:\n")
-    listing, err = collection.List(client)
-    if err != nil {
-        fmt.Printf("Failed to get registry: %s\n", err)
-    }
+	fmt.Printf("\nupdate container runtime policy\n")
+	runtimeContainerRule.Name = "name change"
+	runtimeContainerPolicy = policies.Policy{LearningDisabled: false, Rules: []policies.Rule{runtimeContainerRule}}
+	runtimeContainerErr = policies.Update(*client, policies.RuntimeContainerEndpoint, runtimeContainerPolicy)
+	if runtimeContainerErr != nil {
+		fmt.Printf("failed to update container runtime policy: %s\n", runtimeContainerErr)
+	}
 
-    for _, elm := range listing {
-        fmt.Printf("* %s   %s\n", elm.Name, elm.Color)
-    }
+	fmt.Printf("\nget container runtime policy:\n")
+	retrievedPolicy, runtimeContainerErr = policies.Get(*client, policies.RuntimeContainerEndpoint)
+	if runtimeContainerErr != nil {
+		fmt.Printf("failed to get container runtime policy: %s\n", runtimeContainerErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
 
-    fmt.Printf("\nDELETE added Collection:\n")
-    err = collection.Delete(client, "My Collection")
-    if err != nil {
-        fmt.Printf("Failed to get collections: %s\n", err)
-    }
-*/
-    
+	/*
+		HOST RUNTIME
+	*/
+	runtimeHostColl := collections.Collection{Name: "All"}
+	runtimeHostForensic := policies.Forensic{
+		ActivitiesDisabled:       false,
+		SshdEnabled:              false,
+		SudoEnabled:              false,
+		ServiceActivitiesEnabled: false,
+		DockerEnabled:            false,
+		ReadonlyDockerEnabled:    false,
+	}
+	runtimeHostNetwork := policies.Network{DenyListEffect: "alert", CustomFeed: "alert", IntelligenceFeed: "alert"}
+	runtimeHostDNS := policies.Dns{DenyListEffect: "disable", IntelligenceFeed: "disable"}
+
+	runtimeHostDeniedProcesses := policies.DeniedProcesses{Effect: "alert"}
+	runtimeHostAntiMalware := policies.AntiMalware{
+		DeniedProcesses:            runtimeHostDeniedProcesses,
+		CryptoMiner:                "alert",
+		ServiceUnknownOriginBinary: "alert",
+		UserUnknownOriginBinary:    "alert",
+		EncryptedBinaries:          "alert",
+		SuspiciousELFHeaders:       "alert",
+		TempFSProc:                 "alert",
+		ReverseShell:               "alert",
+		WebShell:                   "alert",
+		ExecutionFlowHijack:        "alert",
+		CustomFeed:                 "alert",
+		IntelligenceFeed:           "alert",
+		WildFireAnalysis:           "alert",
+	}
+
+	runtimeHostRule := policies.Rule{Name: "example host runtime rule", Collections: []collections.Collection{runtimeHostColl}, Forensic: runtimeHostForensic, Network: runtimeHostNetwork, Dns: runtimeHostDNS, AntiMalware: runtimeHostAntiMalware}
+	runtimeHostRules := []policies.Rule{runtimeHostRule}
+	runtimeHostPolicy := policies.Policy{Rules: runtimeHostRules}
+
+	fmt.Printf("\nupdate host runtime policy\n")
+	runtimeHostErr := policies.Update(*client, policies.RuntimeHostEndpoint, runtimeHostPolicy)
+	if runtimeHostErr != nil {
+		fmt.Printf("\nfailed to update host runtime policy: %v\n", runtimeHostErr)
+	}
+
+	fmt.Printf("\nget host runtime policy:\n")
+	retrievedPolicy, runtimeHostErr = policies.Get(*client, policies.RuntimeHostEndpoint)
+	if runtimeHostErr != nil {
+		fmt.Printf("failed to get host runtime policy: %s\n", runtimeHostErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	fmt.Printf("\nupdate host runtime policy\n")
+	runtimeHostRule.Name = "name change"
+	runtimeHostPolicy = policies.Policy{Rules: []policies.Rule{runtimeHostRule}}
+	runtimeHostErr = policies.Update(*client, policies.RuntimeHostEndpoint, runtimeHostPolicy)
+	if runtimeHostErr != nil {
+		fmt.Printf("failed to update host runtime policy: %s\n", runtimeHostErr)
+	}
+
+	fmt.Printf("\nget host runtime policy:\n")
+	retrievedPolicy, runtimeHostErr = policies.Get(*client, policies.RuntimeHostEndpoint)
+	if runtimeHostErr != nil {
+		fmt.Printf("failed to get host runtime policy: %s\n", runtimeHostErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	/*
+		CI IMAGE VULNERABILITY
+	*/
+	vulnerabilityCiImageColl := collections.Collection{Name: "All"}
+	vulnerabilityCiImageRule := policies.Rule{Name: "example CI image vulnerability rule", Collections: []collections.Collection{vulnerabilityCiImageColl}, Effect: "alert"}
+	vulnerabilityCiImagePolicy := policies.Policy{PolicyType: "ciImagesVulnerability", Rules: []policies.Rule{vulnerabilityCiImageRule}}
+	fmt.Printf("\nupdate CI image vulnerability policy\n")
+	vulnerabilityCiImageErr := policies.Update(*client, policies.VulnerabilityCiImagesEndpoint, vulnerabilityCiImagePolicy)
+	if vulnerabilityCiImageErr != nil {
+		fmt.Printf("failed to update CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
+	}
+
+	fmt.Printf("\nget CI image vulnerability policy:\n")
+	retrievedPolicy, vulnerabilityCiImageErr = policies.Get(*client, policies.VulnerabilityCiImagesEndpoint)
+	if vulnerabilityCiImageErr != nil {
+		fmt.Printf("failed to get CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	fmt.Printf("\nupdate CI image vulnerability policy\n")
+	vulnerabilityCiImageRule.Name = "name change"
+	vulnerabilityCiImagePolicy = policies.Policy{PolicyType: "ciImagesVulnerability", Rules: []policies.Rule{vulnerabilityCiImageRule}}
+	vulnerabilityCiImageErr = policies.Update(*client, policies.VulnerabilityCiImagesEndpoint, vulnerabilityCiImagePolicy)
+	if vulnerabilityCiImageErr != nil {
+		fmt.Printf("failed to update CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
+	}
+
+	fmt.Printf("\nget CI image vulnerability policy:\n")
+	retrievedPolicy, vulnerabilityCiImageErr = policies.Get(*client, policies.VulnerabilityCiImagesEndpoint)
+	if vulnerabilityCiImageErr != nil {
+		fmt.Printf("failed to get CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	/*
+		HOST VULNERABILITY
+	*/
+	vulnerabilityHostColl := collections.Collection{Name: "All"}
+	vulnerabilityHostRule := policies.Rule{Name: "example host vulnerability rule", Collections: []collections.Collection{vulnerabilityHostColl}, Effect: "alert"}
+	vulnerabilityHostPolicy := policies.Policy{PolicyType: "hostVulnerability", Rules: []policies.Rule{vulnerabilityHostRule}}
+	fmt.Printf("\nupdate host vulnerability policy\n")
+	vulnerabilityHostErr := policies.Update(*client, policies.VulnerabilityHostEndpoint, vulnerabilityHostPolicy)
+	if vulnerabilityHostErr != nil {
+		fmt.Printf("failed to update host vulnerability policy: %s\n", vulnerabilityHostErr)
+	}
+
+	fmt.Printf("\nget host vulnerability policy:\n")
+	retrievedPolicy, vulnerabilityHostErr = policies.Get(*client, policies.VulnerabilityHostEndpoint)
+	if vulnerabilityHostErr != nil {
+		fmt.Printf("failed to get host vulnerability policy: %s\n", vulnerabilityHostErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	fmt.Printf("\nupdate host vulnerability policy\n")
+	vulnerabilityHostRule.Name = "name change"
+	vulnerabilityHostPolicy = policies.Policy{PolicyType: "hostVulnerability", Rules: []policies.Rule{vulnerabilityHostRule}}
+	vulnerabilityHostErr = policies.Update(*client, policies.VulnerabilityHostEndpoint, vulnerabilityHostPolicy)
+	if vulnerabilityHostErr != nil {
+		fmt.Printf("failed to update host vulnerability policy: %s\n", vulnerabilityHostErr)
+	}
+
+	fmt.Printf("\nget host vulnerability policy:\n")
+	retrievedPolicy, vulnerabilityHostErr = policies.Get(*client, policies.VulnerabilityHostEndpoint)
+	if vulnerabilityHostErr != nil {
+		fmt.Printf("failed to get host vulnerability policy: %s\n", vulnerabilityHostErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	/*
+		IMAGE VULNERABILITY
+	*/
+	vulnerabilityimageColl := collections.Collection{Name: "All"}
+	vulnerabilityimageRule := policies.Rule{Name: "example image vulnerability rule", Collections: []collections.Collection{vulnerabilityimageColl}, Effect: "alert"}
+	vulnerabilityimagePolicy := policies.Policy{PolicyType: "containerVulnerability", Rules: []policies.Rule{vulnerabilityimageRule}}
+	fmt.Printf("\nupdate image vulnerability policy\n")
+	vulnerabilityimageErr := policies.Update(*client, policies.VulnerabilityImagesEndpoint, vulnerabilityimagePolicy)
+	if vulnerabilityimageErr != nil {
+		fmt.Printf("failed to update image vulnerability policy: %s\n", vulnerabilityimageErr)
+	}
+
+	fmt.Printf("\nget image vulnerability policy:\n")
+	retrievedPolicy, vulnerabilityimageErr = policies.Get(*client, policies.VulnerabilityImagesEndpoint)
+	if vulnerabilityimageErr != nil {
+		fmt.Printf("failed to get image vulnerability policy: %s\n", vulnerabilityimageErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	fmt.Printf("\nupdate image vulnerability policy\n")
+	vulnerabilityimageRule.Name = "name change"
+	vulnerabilityimagePolicy = policies.Policy{PolicyType: "containerVulnerability", Rules: []policies.Rule{vulnerabilityimageRule}}
+	vulnerabilityimageErr = policies.Update(*client, policies.VulnerabilityImagesEndpoint, vulnerabilityimagePolicy)
+	if vulnerabilityimageErr != nil {
+		fmt.Printf("failed to update image vulnerability policy: %s\n", vulnerabilityimageErr)
+	}
+
+	fmt.Printf("\nget image vulnerability policy:\n")
+	retrievedPolicy, vulnerabilityimageErr = policies.Get(*client, policies.VulnerabilityImagesEndpoint)
+	if vulnerabilityimageErr != nil {
+		fmt.Printf("failed to get image vulnerability policy: %s\n", vulnerabilityimageErr)
+	}
+	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+
+	/*
+		REGISTRY SETTINGS
+	*/
+	fmt.Printf("\nupdate registry settings\n")
+	registrySpec := registry.Specification{
+		Version:     "2",
+		Registry:    "",
+		Os:          "linux",
+		Cap:         5,
+		Scanners:    2,
+		Repository:  "library/ubuntu",
+		Tag:         "20.04",
+		Collections: []string{"All"},
+	}
+	reg := registry.Registry{Specifications: []registry.Specification{registrySpec}}
+	registryErr := registry.Update(*client, reg)
+	if registryErr != nil {
+		fmt.Printf("failed to update registry settings: %s\n", registryErr)
+	}
+
+	fmt.Printf("\nget registry settings:\n")
+	retrievedRegistry, registryErr := registry.Get(*client)
+	if registryErr != nil {
+		fmt.Printf("failed to get registry settings: %s\n", registryErr)
+	}
+	fmt.Printf("* %v\n", retrievedRegistry)
+
+	fmt.Printf("\nupdate registry settings\n")
+	registrySpec = registry.Specification{
+		Version:     "2",
+		Registry:    "",
+		Os:          "linux",
+		Cap:         5,
+		Scanners:    2,
+		Repository:  "library/ubuntu",
+		Tag:         "21.04",
+		Collections: []string{"All"},
+	}
+	reg = registry.Registry{Specifications: []registry.Specification{registrySpec}}
+	registryErr = registry.Update(*client, reg)
+	if registryErr != nil {
+		fmt.Printf("failed to update registry settings: %s\n", registryErr)
+	}
+
+	fmt.Printf("\nget registry settings:\n")
+	retrievedRegistry, registryErr = registry.Get(*client)
+	if registryErr != nil {
+		fmt.Printf("failed to get registry settings: %s\n", registryErr)
+	}
+	fmt.Printf("* %v\n", retrievedRegistry)
 }
