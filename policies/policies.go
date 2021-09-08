@@ -153,10 +153,10 @@ type License struct {
 }
 
 type Tag struct {
-	Description string       `json:"description,omitempty"`
-	Effect      string       `json:"effect,omitempty"`
-	Expiration  []Expiration `json:"expiration,omitempty"`
-	Name        string       `json:"name,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Effect      string     `json:"effect,omitempty"`
+	Expiration  Expiration `json:"expiration,omitempty"`
+	Name        string     `json:"name,omitempty"`
 }
 
 type CustomRule struct {
