@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	pcc "github.com/paloaltonetworks/prisma-cloud-compute-go"
@@ -19,7 +19,7 @@ func main() {
 	}
 	defer credsFile.Close()
 
-	fileContent, err := ioutil.ReadAll(credsFile)
+	fileContent, err := io.ReadAll(credsFile)
 	if err != nil {
 		fmt.Printf("error reading creds file: %v", err)
 		return

@@ -3,7 +3,7 @@ package pcc
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 )
@@ -15,7 +15,7 @@ func TestAPIClient(t *testing.T) {
 	}
 	defer credsFile.Close()
 
-	fileContent, err := ioutil.ReadAll(credsFile)
+	fileContent, err := io.ReadAll(credsFile)
 	if err != nil {
 		fmt.Printf("error reading creds file: %v", err)
 		return
