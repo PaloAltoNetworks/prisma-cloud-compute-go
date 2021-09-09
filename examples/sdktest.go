@@ -32,7 +32,7 @@ func main() {
 
 	client, err := pcc.APIClient(creds.ConsoleURL, creds.Username, creds.Password, creds.SkipCertVerification)
 	if err != nil {
-		fmt.Printf("Failed creating API client")
+		fmt.Printf("failed creating API client: %v", err)
 		return
 	}
 

@@ -2,6 +2,7 @@ package pcc
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -19,12 +20,11 @@ type Credentials struct {
 
 // A connection to Prisma Cloud Compute.
 type Client struct {
-	ConsoleURL           string
-	Username             string
-	Password             string
-	SkipCertVerification bool
-	HTTPClient           *http.Client
-	JWT                  string
+	ConsoleURL string
+	Username   string
+	Password   string
+	HTTPClient *http.Client
+	JWT        string
 }
 
 // Communicate with the Prisma Cloud Compute API.
@@ -108,11 +108,21 @@ func APIClient(console_url, username, password string, skip_cert_verification bo
 		console_url += "/"
 	}
 	apiClient := &Client{
-		ConsoleURL:           console_url,
-		Username:             username,
-		Password:             password,
-		SkipCertVerification: skip_cert_verification,
-		HTTPClient:           &http.Client{},
+		ConsoleURL: console_url,
+		Username:   username,
+		Password:   password,
+	}
+
+	if skip_cert_verification {
+		apiClient.HTTPClient = &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		}
+	} else {
+		apiClient.HTTPClient = &http.Client{}
 	}
 
 	if err := apiClient.authenticate(); err != nil {
