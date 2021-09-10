@@ -74,8 +74,22 @@ func Get(c pcc.Client) (Registry, error) {
 	return ans, nil
 }
 
+func Create(client pcc.Client, registry Registry) error {
+	return CreateUpdate(client, registry, false)
+}
+
 // Update the registry scan settings.
-func Update(c pcc.Client, registry Registry) error {
-	err := c.Communicate(http.MethodPut, endpoint, nil, registry, nil)
+func Update(client pcc.Client, registry Registry) error {
+	return CreateUpdate(client, registry, true)
+}
+
+func CreateUpdate(c pcc.Client, registry Registry, exists bool) error {
+	var method string
+	if exists {
+		method = http.MethodPut
+	} else {
+		method = http.MethodPost
+	}
+	err := c.Communicate(method, endpoint, nil, registry, nil)
 	return err
 }
