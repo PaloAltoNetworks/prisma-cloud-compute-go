@@ -85,11 +85,14 @@ func Update(client pcc.Client, registry Registry) error {
 
 func CreateUpdate(c pcc.Client, registry Registry, exists bool) error {
 	var method string
+	var data interface{}
 	if exists {
 		method = http.MethodPut
+		data = registry
 	} else {
 		method = http.MethodPost
+		data = registry.Specifications[0]
 	}
-	err := c.Communicate(method, endpoint, nil, registry, nil)
+	err := c.Communicate(method, endpoint, nil, data, nil)
 	return err
 }

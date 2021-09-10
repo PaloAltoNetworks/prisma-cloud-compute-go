@@ -428,7 +428,6 @@ func main() {
 	/*
 		REGISTRY SETTINGS
 	*/
-	fmt.Printf("\nupdate registry settings\n")
 	registrySpec := registry.Specification{
 		Version:     "2",
 		Registry:    "",
@@ -440,7 +439,22 @@ func main() {
 		Collections: []string{"All"},
 	}
 	reg := registry.Registry{Specifications: []registry.Specification{registrySpec}}
-	registryErr := registry.Update(*client, reg)
+	
+	fmt.Printf("\ncreate registry settings:\n")
+	registryErr := registry.Create(*client, reg)
+	if registryErr != nil {
+		fmt.Printf("failed to create registry settings: %s\n", registryErr)
+	}
+
+	fmt.Printf("\nget registry settings:\n")
+	retrievedRegistry, registryErr := registry.Get(*client)
+	if registryErr != nil {
+		fmt.Printf("failed to get registry settings: %s\n", registryErr)
+	}
+	fmt.Printf("* %v\n", retrievedRegistry)
+
+	fmt.Printf("\nupdate registry settings:\n")	
+	registryErr = registry.Update(*client, reg)
 	if registryErr != nil {
 		fmt.Printf("failed to update registry settings: %s\n", registryErr)
 	}
