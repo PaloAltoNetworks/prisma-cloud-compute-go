@@ -42,14 +42,14 @@ type Rule struct {
 	Disabled                 bool                     `json:"disabled"`
 	Dns                      Dns                      `json:"dns,omitempty"`
 	Effect                   string                   `json:"effect,omitempty"`
-	FileIntegrityRules       []FileIntegrityRules     `json:"fileIntegrityRules,omitempty"`
+	FileIntegrityRules       []FileIntegrityRule      `json:"fileIntegrityRules,omitempty"`
 	Filesystem               Filesystem               `json:"filesystem,omitempty"`
 	Forensic                 Forensic                 `json:"forensic,omitempty"`
 	GraceDays                int                      `json:"graceDays,omitempty"`
 	Group                    []string                 `json:"group,omitempty"`
 	KubernetesEnforcement    bool                     `json:"kubernetesEnforcement"`
 	License                  License                  `json:"license,omitempty"`
-	LogInspectionRules       []LogInspectionRules     `json:"logInspectionRules,omitempty"`
+	LogInspectionRules       []LogInspectionRule      `json:"logInspectionRules,omitempty"`
 	Modified                 string                   `json:"modified,omitempty"`
 	Name                     string                   `json:"name,omitempty"`
 	Network                  Network                  `json:"network,omitempty"`
@@ -64,7 +64,7 @@ type Rule struct {
 	WildFireAnalysis         string                   `json:"wildFireAnalysis,omitempty"`
 }
 
-type FileIntegrityRules struct {
+type FileIntegrityRule struct {
 	Dir           bool     `json:"dir"`
 	Exclusions    []string `json:"exclusions,omitempty"`
 	Metadata      bool     `json:"metadata"`
@@ -83,7 +83,7 @@ type Forensic struct {
 	SshdEnabled              bool `json:"sshdEnabled"`
 	SudoEnabled              bool `json:"sudoEnabled"`
 }
-type LogInspectionRules struct {
+type LogInspectionRule struct {
 	Path  string   `json:"path,omitempty"`
 	Regex []string `json:"regex,omitempty"`
 }
