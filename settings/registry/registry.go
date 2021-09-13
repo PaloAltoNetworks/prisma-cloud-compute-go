@@ -17,7 +17,7 @@ type Specification struct {
 	Collections              []string `json:"collections,omitempty"`
 	CredentialId             string   `json:"credentialID,omitempty"`
 	ExcludedRepositories     []string `json:"excludedRepositories,omitempty"`
-	ExcludedTags             string   `json:"excludedTags,omitempty"`
+	ExcludedTags             []string `json:"excludedTags,omitempty"`
 	HarborDeploymentSecurity bool     `json:"harborDeploymentSecurity,omitempty"`
 	JfrogRepoTypes           []string `json:"jfrogRepoTypes,omitempty"`
 	Namespace                string   `json:"namespace,omitempty"`
