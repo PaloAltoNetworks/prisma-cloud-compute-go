@@ -9,16 +9,14 @@ import (
 const endpoint = "api/v1/settings/registry"
 
 type Registry struct {
-	HarborScannerUrlSuffix string          `json:"harborScannerUrlSuffix,omitempty"`
-	Specifications         []Specification `json:"specifications,omitempty"`
-	WebhookUrlSuffix       string          `json:"webhookUrlSuffix,omitempty"`
+	Specifications []Specification `json:"specifications,omitempty"`
 }
 
 type Specification struct {
 	Cap                      int        `json:"cap,omitempty"`
 	Collections              []string   `json:"collections,omitempty"`
 	Credential               Credential `json:"credential,omitempty"`
-	CredentialID             string     `json:"credentialID,omitempty"`
+	CredentialId             string     `json:"credentialID,omitempty"`
 	ExcludedRepositories     []string   `json:"excludedRepositories,omitempty"`
 	ExcludedTags             string     `json:"excludedTags,omitempty"`
 	HarborDeploymentSecurity bool       `json:"harborDeploymentSecurity,omitempty"`
@@ -34,8 +32,8 @@ type Specification struct {
 }
 
 type Credential struct {
-	AccountGUID  string       `json:"accountGUID,omitempty"`
-	AccountID    string       `json:"accountID,omitempty"`
+	AccountGuid  string       `json:"accountGUID,omitempty"`
+	AccountId    string       `json:"accountID,omitempty"`
 	ApiToken     StringResult `json:"apiToken,omitempty"`
 	CaCert       string       `json:"caCert,omitempty"`
 	Created      string       `json:"created,omitempty"`
@@ -49,7 +47,7 @@ type Credential struct {
 	SkipVerify   bool         `json:"skipVerify"`
 	Type         string       `json:"type,omitempty"`
 	Url          string       `json:"url,omitempty"`
-	UseAWSRole   bool         `json:"useAWSRole"`
+	UseAwsRole   bool         `json:"useAWSRole"`
 }
 
 type StringResult struct {
@@ -74,9 +72,9 @@ func Get(c pcc.Client) (Registry, error) {
 	return ans, nil
 }
 
-func Create(client pcc.Client, registry Registry) error {
-	return CreateUpdate(client, registry, false)
-}
+// func Create(client pcc.Client, registry Registry) error {
+// 	return CreateUpdate(client, registry, false)
+// }
 
 // Update the registry scan settings.
 func Update(client pcc.Client, registry Registry) error {
@@ -86,13 +84,13 @@ func Update(client pcc.Client, registry Registry) error {
 func CreateUpdate(c pcc.Client, registry Registry, exists bool) error {
 	var method string
 	var data interface{}
-	if exists {
-		method = http.MethodPut
-		data = registry
-	} else {
-		method = http.MethodPost
-		data = registry.Specifications[0]
-	}
+	// if exists {
+	method = http.MethodPut
+	data = registry
+	// } else {
+	// 	method = http.MethodPost
+	// 	data = registry.Specifications[0]
+	// }
 	err := c.Communicate(method, endpoint, nil, data, nil)
 	return err
 }

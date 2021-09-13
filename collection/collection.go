@@ -1,4 +1,4 @@
-package collections
+package collection
 
 import (
 	"fmt"
@@ -10,8 +10,8 @@ import (
 const endpoint = "api/v1/collections"
 
 type Collection struct {
-	AccountIDs  []string `json:"accountIDs,omitempty"`
-	AppIDs      []string `json:"appIDs,omitempty"`
+	AccountIds  []string `json:"accountIDs,omitempty"`
+	AppIds      []string `json:"appIDs,omitempty"`
 	Clusters    []string `json:"clusters,omitempty"`
 	CodeRepos   []string `json:"codeRepos,omitempty"`
 	Color       string   `json:"color,omitempty"`
