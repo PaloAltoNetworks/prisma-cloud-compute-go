@@ -28,8 +28,8 @@ type Client struct {
 }
 
 // Communicate with the Prisma Cloud Compute API.
-func (apiClient *Client) Communicate(method, endpoint string, query, data, response interface{}) (err error) {
-	parsedURL, err := url.Parse(apiClient.ConsoleURL)
+func (c *Client) Request(method, endpoint string, query, data, response interface{}) (err error) {
+	parsedURL, err := url.Parse(c.ConsoleURL)
 	if err != nil {
 		return err
 	}
@@ -50,10 +50,10 @@ func (apiClient *Client) Communicate(method, endpoint string, query, data, respo
 	}
 
 	req, err := http.NewRequest(method, completeURL.String(), &buf)
-	req.Header.Set("Authorization", "Bearer "+apiClient.JWT)
+	req.Header.Set("Authorization", "Bearer "+c.JWT)
 	req.Header.Set("Content-Type", "application/json")
 
-	res, err := apiClient.HTTPClient.Do(req)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (apiClient *Client) Communicate(method, endpoint string, query, data, respo
 }
 
 // Authenticate with the Prisma Cloud Compute Console.
-func (apiClient *Client) authenticate() (err error) {
+func (c *Client) authenticate() (err error) {
 
 	type AuthRequest struct {
 		Username string `json:"username"`
@@ -90,15 +90,15 @@ func (apiClient *Client) authenticate() (err error) {
 
 	res := AuthResponse{}
 
-	if apiClient.Username != "" && apiClient.Password != "" {
-		if err := apiClient.Communicate(http.MethodPost, "/api/v1/authenticate", nil, AuthRequest{apiClient.Username, apiClient.Password}, &res); err != nil {
+	if c.Username != "" && c.Password != "" {
+		if err := c.Request(http.MethodPost, "/api/v1/authenticate", nil, AuthRequest{c.Username, c.Password}, &res); err != nil {
 			return err
 		}
 	} else {
 		return fmt.Errorf("username and/or password missing")
 	}
 
-	apiClient.JWT = res.Token
+	c.JWT = res.Token
 	return nil
 }
 

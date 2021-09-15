@@ -3,7 +3,7 @@ package registry
 import (
 	"net/http"
 
-	pcc "github.com/paloaltonetworks/prisma-cloud-compute-go"
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 )
 
 const Endpoint = "api/v1/settings/registry"
@@ -15,7 +15,7 @@ type Registry struct {
 type Specification struct {
 	Cap                      int      `json:"cap,omitempty"`
 	Collections              []string `json:"collections,omitempty"`
-	CredentialId             string   `json:"credentialID,omitempty"`
+	Credential               string   `json:"credentialID,omitempty"`
 	ExcludedRepositories     []string `json:"excludedRepositories,omitempty"`
 	ExcludedTags             []string `json:"excludedTags,omitempty"`
 	HarborDeploymentSecurity bool     `json:"harborDeploymentSecurity,omitempty"`
@@ -30,34 +30,16 @@ type Specification struct {
 	VersionPattern           string   `json:"versionPattern,omitempty"`
 }
 
-// Return the registry scan settings.
+// Get the current registry scan settings.
 func Get(c pcc.Client) (Registry, error) {
 	var ans Registry
-	if err := c.Communicate(http.MethodGet, Endpoint, nil, nil, &ans); err != nil {
+	if err := c.Request(http.MethodGet, Endpoint, nil, nil, &ans); err != nil {
 		return ans, err
 	}
 	return ans, nil
 }
 
-// func Create(client pcc.Client, registry Registry) error {
-// 	return CreateUpdate(client, registry, false)
-// }
-
-// Update the registry scan settings.
-func Update(client pcc.Client, registry Registry) error {
-	return CreateUpdate(client, registry, true)
-}
-
-func CreateUpdate(c pcc.Client, registry Registry, exists bool) error {
-	var method string
-	var data interface{}
-	// if exists {
-	method = http.MethodPut
-	data = registry
-	// } else {
-	// 	method = http.MethodPost
-	// 	data = registry.Specifications[0]
-	// }
-	err := c.Communicate(method, Endpoint, nil, data, nil)
-	return err
+// Update the current registry scan settings.
+func Update(c pcc.Client, registry Registry) error {
+	return c.Request(http.MethodPut, Endpoint, nil, registry, nil)
 }

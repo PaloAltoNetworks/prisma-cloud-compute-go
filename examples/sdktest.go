@@ -6,8 +6,8 @@ import (
 	"io"
 	"os"
 
-	pcc "github.com/paloaltonetworks/prisma-cloud-compute-go"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/collection"
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/policy"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/settings/registry"
 )
@@ -101,169 +101,169 @@ func main() {
 		CI IMAGE COMPLIANCE
 	*/
 	complianceCiImageColl := collection.Collection{Name: "All"}
-	complianceCiImageVuln1 := policy.Vulnerability{Id: 41, Block: false}
-	complianceCiImageVuln2 := policy.Vulnerability{Id: 422, Block: true}
-	complianceCiImageCondition := policy.Condition{Vulnerabilities: []policy.Vulnerability{complianceCiImageVuln1, complianceCiImageVuln2}}
-	complianceCiImageRule := policy.Rule{Name: "example ci image compliance rule", Effect: "alert, block", Collections: []collection.Collection{complianceCiImageColl}, Condition: complianceCiImageCondition}
-	complianceCiImageRules := []policy.Rule{complianceCiImageRule}
-	complianceCiImagePolicy := policy.Policy{PolicyType: "ciImagesCompliance", Rules: complianceCiImageRules}
+	complianceCiImageCheck1 := policy.ComplianceCheck{Id: 41, Block: false}
+	complianceCiImageCheck2 := policy.ComplianceCheck{Id: 422, Block: true}
+	complianceCiImageConditions := policy.ComplianceConditions{Checks: []policy.ComplianceCheck{complianceCiImageCheck1, complianceCiImageCheck2}}
+	complianceCiImageRule := policy.ComplianceRule{Name: "example ci image compliance rule", Effect: "alert, block", Collections: []collection.Collection{complianceCiImageColl}, Conditions: complianceCiImageConditions}
+	complianceCiImageRules := []policy.ComplianceRule{complianceCiImageRule}
+	complianceCiImagePolicy := policy.CompliancePolicy{Type: "ciImagesCompliance", Rules: complianceCiImageRules}
 
 	fmt.Printf("\nupdate CI image compliance policy\n")
-	complianceCiImageErr := policy.Update(*client, policy.ComplianceCiImagesEndpoint, complianceCiImagePolicy)
+	complianceCiImageErr := policy.UpdateComplianceCiImage(*client, complianceCiImagePolicy)
 	if complianceCiImageErr != nil {
 		fmt.Printf("\nFailed to update CI image compliance policy: %v\n", complianceCiImageErr)
 	}
 
 	fmt.Printf("\nget CI image compliance policy:\n")
-	retrievedPolicy, complianceCiImageErr := policy.Get(*client, policy.ComplianceCiImagesEndpoint)
+	retrievedCompliancePolicy, complianceCiImageErr := policy.GetComplianceCiImage(*client)
 	if complianceCiImageErr != nil {
 		fmt.Printf("failed to get CI image compliance policy: %s\n", complianceCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
 
 	fmt.Printf("\nupdate CI image compliance policy\n")
 	complianceCiImageRule.Name = "name change"
-	complianceCiImagePolicy = policy.Policy{PolicyType: "ciImagesCompliance", Rules: []policy.Rule{complianceCiImageRule}}
-	complianceCiImageErr = policy.Update(*client, policy.ComplianceCiImagesEndpoint, complianceCiImagePolicy)
+	complianceCiImagePolicy = policy.CompliancePolicy{Type: "ciImagesCompliance", Rules: []policy.ComplianceRule{complianceCiImageRule}}
+	complianceCiImageErr = policy.UpdateComplianceCiImage(*client, complianceCiImagePolicy)
 	if complianceCiImageErr != nil {
 		fmt.Printf("failed to update CI image compliance policy: %s\n", complianceCiImageErr)
 	}
 
 	fmt.Printf("\nget CI image compliance policy:\n")
-	retrievedPolicy, complianceCiImageErr = policy.Get(*client, policy.ComplianceCiImagesEndpoint)
+	retrievedCompliancePolicy, complianceCiImageErr = policy.GetComplianceCiImage(*client)
 	if complianceCiImageErr != nil {
 		fmt.Printf("failed to get CI image compliance policy: %s\n", complianceCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
 
 	/*
 		CONTAINER COMPLIANCE
 	*/
 	complianceContainerColl := collection.Collection{Name: "All"}
-	complianceContainerVuln1 := policy.Vulnerability{Id: 41, Block: false}
-	complianceContainerVuln2 := policy.Vulnerability{Id: 422, Block: true}
-	complianceContainerCondition := policy.Condition{Vulnerabilities: []policy.Vulnerability{complianceContainerVuln1, complianceContainerVuln2}}
-	complianceContainerRule := policy.Rule{Name: "example container compliance rule", Effect: "alert, block", Collections: []collection.Collection{complianceContainerColl}, Condition: complianceContainerCondition}
-	complianceContainerRules := []policy.Rule{complianceContainerRule}
-	complianceContainerPolicy := policy.Policy{PolicyType: "containerCompliance", Rules: complianceContainerRules}
+	complianceContainerCheck1 := policy.ComplianceCheck{Id: 41, Block: false}
+	complianceContainerCheck2 := policy.ComplianceCheck{Id: 422, Block: true}
+	complianceContainerConditions := policy.ComplianceConditions{Checks: []policy.ComplianceCheck{complianceContainerCheck1, complianceContainerCheck2}}
+	complianceContainerRule := policy.ComplianceRule{Name: "example container compliance rule", Effect: "alert, block", Collections: []collection.Collection{complianceContainerColl}, Conditions: complianceContainerConditions}
+	complianceContainerRules := []policy.ComplianceRule{complianceContainerRule}
+	complianceContainerPolicy := policy.CompliancePolicy{Type: "containerCompliance", Rules: complianceContainerRules}
 
 	fmt.Printf("\nupdate container compliance policy\n")
-	complianceContainerErr := policy.Update(*client, policy.ComplianceContainerEndpoint, complianceContainerPolicy)
+	complianceContainerErr := policy.UpdateComplianceContainer(*client, complianceContainerPolicy)
 	if complianceContainerErr != nil {
 		fmt.Printf("\nFailed to update container compliance policy: %v\n", complianceContainerErr)
 	}
 
 	fmt.Printf("\nget container compliance policy:\n")
-	retrievedPolicy, complianceContainerErr = policy.Get(*client, policy.ComplianceContainerEndpoint)
+	retrievedCompliancePolicy, complianceContainerErr = policy.GetComplianceContainer(*client)
 	if complianceContainerErr != nil {
 		fmt.Printf("failed to get container compliance policy: %s\n", complianceContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
 
 	fmt.Printf("\nupdate container compliance policy\n")
 	complianceContainerRule.Name = "name change"
-	complianceContainerPolicy = policy.Policy{PolicyType: "containerCompliance", Rules: []policy.Rule{complianceContainerRule}}
-	complianceContainerErr = policy.Update(*client, policy.ComplianceContainerEndpoint, complianceContainerPolicy)
+	complianceContainerPolicy = policy.CompliancePolicy{Type: "containerCompliance", Rules: []policy.ComplianceRule{complianceContainerRule}}
+	complianceContainerErr = policy.UpdateComplianceContainer(*client, complianceContainerPolicy)
 	if complianceContainerErr != nil {
 		fmt.Printf("failed to update container compliance policy: %s\n", complianceContainerErr)
 	}
 
 	fmt.Printf("\nget container compliance policy:\n")
-	retrievedPolicy, complianceContainerErr = policy.Get(*client, policy.ComplianceContainerEndpoint)
+	retrievedCompliancePolicy, complianceContainerErr = policy.GetComplianceContainer(*client)
 	if complianceContainerErr != nil {
 		fmt.Printf("failed to get container compliance policy: %s\n", complianceContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
 
 	/*
 		HOST COMPLIANCE
 	*/
 	complianceHostColl := collection.Collection{Name: "All"}
-	complianceHostVuln1 := policy.Vulnerability{Id: 11, Block: false}
-	complianceHostVuln2 := policy.Vulnerability{Id: 112, Block: true}
-	complianceHostCondition := policy.Condition{Vulnerabilities: []policy.Vulnerability{complianceHostVuln1, complianceHostVuln2}}
-	complianceHostRule := policy.Rule{Name: "example host compliance rule", Effect: "alert, block", Collections: []collection.Collection{complianceHostColl}, Condition: complianceHostCondition}
-	complianceHostRules := []policy.Rule{complianceHostRule}
-	complianceHostPolicy := policy.Policy{PolicyType: "hostCompliance", Rules: complianceHostRules}
+	complianceHostCheck1 := policy.ComplianceCheck{Id: 11, Block: false}
+	complianceHostCheck2 := policy.ComplianceCheck{Id: 112, Block: true}
+	complianceHostConditions := policy.ComplianceConditions{Checks: []policy.ComplianceCheck{complianceHostCheck1, complianceHostCheck2}}
+	complianceHostRule := policy.ComplianceRule{Name: "example host compliance rule", Effect: "alert, block", Collections: []collection.Collection{complianceHostColl}, Conditions: complianceHostConditions}
+	complianceHostRules := []policy.ComplianceRule{complianceHostRule}
+	complianceHostPolicy := policy.CompliancePolicy{Type: "hostCompliance", Rules: complianceHostRules}
 
 	fmt.Printf("\nupdate host compliance policy\n")
-	complianceHostErr := policy.Update(*client, policy.ComplianceHostEndpoint, complianceHostPolicy)
+	complianceHostErr := policy.UpdateComplianceHost(*client, complianceHostPolicy)
 	if complianceHostErr != nil {
 		fmt.Printf("\nFailed to update host compliance policy: %v\n", complianceHostErr)
 	}
 
 	fmt.Printf("\nget host compliance policy:\n")
-	retrievedPolicy, complianceHostErr = policy.Get(*client, policy.ComplianceHostEndpoint)
+	retrievedCompliancePolicy, complianceHostErr = policy.GetComplianceHost(*client)
 	if complianceHostErr != nil {
 		fmt.Printf("failed to get host compliance policy: %s\n", complianceHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
 
 	fmt.Printf("\nupdate host compliance policy\n")
 	complianceHostRule.Name = "name change"
-	complianceHostPolicy = policy.Policy{PolicyType: "hostCompliance", Rules: []policy.Rule{complianceHostRule}}
-	complianceHostErr = policy.Update(*client, policy.ComplianceHostEndpoint, complianceHostPolicy)
+	complianceHostPolicy = policy.CompliancePolicy{Type: "hostCompliance", Rules: []policy.ComplianceRule{complianceHostRule}}
+	complianceHostErr = policy.UpdateComplianceHost(*client, complianceHostPolicy)
 	if complianceHostErr != nil {
 		fmt.Printf("failed to update host compliance policy: %s\n", complianceHostErr)
 	}
 
 	fmt.Printf("\nget host compliance policy:\n")
-	retrievedPolicy, complianceHostErr = policy.Get(*client, policy.ComplianceHostEndpoint)
+	retrievedCompliancePolicy, complianceHostErr = policy.GetComplianceHost(*client)
 	if complianceHostErr != nil {
 		fmt.Printf("failed to get host compliance policy: %s\n", complianceHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
 
 	/*
 		CONTAINER RUNTIME
 	*/
 	runtimeContainerColl := collection.Collection{Name: "All"}
-	runtimeContainerRule := policy.Rule{
+	runtimeContainerRule := policy.RuntimeContainerRule{
 		Name:               "example container runtime rule",
 		Collections:        []collection.Collection{runtimeContainerColl},
 		AdvancedProtection: true,
-		Dns:                policy.Dns{Effect: "disable"},
-		Filesystem:         policy.Filesystem{Effect: "alert"},
-		Network:            policy.Network{Effect: "alert"},
-		Processes:          policy.Processes{Effect: "alert"},
+		Dns:                policy.RuntimeContainerDns{DenyEffect: "disable"},
+		Filesystem:         policy.RuntimeContainerFilesystem{Effect: "alert"},
+		Network:            policy.RuntimeContainerNetwork{DenyEffect: "alert"},
+		Processes:          policy.RuntimeContainerProcesses{DenyEffect: "alert"},
 		WildFireAnalysis:   "alert",
 	}
-	runtimeContainerRules := []policy.Rule{runtimeContainerRule}
-	runtimeContainerPolicy := policy.Policy{LearningDisabled: false, Rules: runtimeContainerRules}
+	runtimeContainerRules := []policy.RuntimeContainerRule{runtimeContainerRule}
+	runtimeContainerPolicy := policy.RuntimeContainerPolicy{LearningDisabled: false, Rules: runtimeContainerRules}
 
 	fmt.Printf("\nupdate container runtime policy\n")
-	runtimeContainerErr := policy.Update(*client, policy.RuntimeContainerEndpoint, runtimeContainerPolicy)
+	runtimeContainerErr := policy.UpdateRuntimeContainer(*client, runtimeContainerPolicy)
 	if runtimeContainerErr != nil {
 		fmt.Printf("\nfailed to update container runtime policy: %v\n", runtimeContainerErr)
 	}
 
 	fmt.Printf("\nget container runtime policy:\n")
-	retrievedPolicy, runtimeContainerErr = policy.Get(*client, policy.RuntimeContainerEndpoint)
+	retrievedRuntimeContainerPolicy, runtimeContainerErr := policy.GetRuntimeContainer(*client)
 	if runtimeContainerErr != nil {
 		fmt.Printf("failed to get container runtime policy: %s\n", runtimeContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedRuntimeContainerPolicy.Id, retrievedRuntimeContainerPolicy.Rules)
 
 	fmt.Printf("\nupdate container runtime policy\n")
 	runtimeContainerRule.Name = "name change"
-	runtimeContainerPolicy = policy.Policy{LearningDisabled: false, Rules: []policy.Rule{runtimeContainerRule}}
-	runtimeContainerErr = policy.Update(*client, policy.RuntimeContainerEndpoint, runtimeContainerPolicy)
+	runtimeContainerPolicy = policy.RuntimeContainerPolicy{LearningDisabled: false, Rules: []policy.RuntimeContainerRule{runtimeContainerRule}}
+	runtimeContainerErr = policy.UpdateRuntimeContainer(*client, runtimeContainerPolicy)
 	if runtimeContainerErr != nil {
 		fmt.Printf("failed to update container runtime policy: %s\n", runtimeContainerErr)
 	}
 
 	fmt.Printf("\nget container runtime policy:\n")
-	retrievedPolicy, runtimeContainerErr = policy.Get(*client, policy.RuntimeContainerEndpoint)
+	retrievedRuntimeContainerPolicy, runtimeContainerErr = policy.GetRuntimeContainer(*client)
 	if runtimeContainerErr != nil {
 		fmt.Printf("failed to get container runtime policy: %s\n", runtimeContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedRuntimeContainerPolicy.Id, retrievedRuntimeContainerPolicy.Rules)
 
 	/*
 		HOST RUNTIME
 	*/
 	runtimeHostColl := collection.Collection{Name: "All"}
-	runtimeHostForensic := policy.Forensic{
+	runtimeHostForensic := policy.RuntimeHostForensic{
 		ActivitiesDisabled:       false,
 		SshdEnabled:              false,
 		SudoEnabled:              false,
@@ -271,11 +271,11 @@ func main() {
 		DockerEnabled:            false,
 		ReadonlyDockerEnabled:    false,
 	}
-	runtimeHostNetwork := policy.Network{DenyListEffect: "alert", CustomFeed: "alert", IntelligenceFeed: "alert"}
-	runtimeHostDNS := policy.Dns{DenyListEffect: "disable", IntelligenceFeed: "disable"}
+	runtimeHostNetwork := policy.RuntimeHostNetwork{DenyEffect: "alert", CustomFeed: "alert", IntelligenceFeed: "alert"}
+	runtimeHostDNS := policy.RuntimeHostDns{DenyEffect: "disable", IntelligenceFeed: "disable"}
 
-	runtimeHostDeniedProcesses := policy.DeniedProcesses{Effect: "alert"}
-	runtimeHostAntiMalware := policy.AntiMalware{
+	runtimeHostDeniedProcesses := policy.RuntimeHostDeniedProcesses{Effect: "alert"}
+	runtimeHostAntiMalware := policy.RuntimeHostAntiMalware{
 		DeniedProcesses:            runtimeHostDeniedProcesses,
 		CryptoMiner:                "alert",
 		ServiceUnknownOriginBinary: "alert",
@@ -291,139 +291,141 @@ func main() {
 		WildFireAnalysis:           "alert",
 	}
 
-	runtimeHostRule := policy.Rule{Name: "example host runtime rule", Collections: []collection.Collection{runtimeHostColl}, Forensic: runtimeHostForensic, Network: runtimeHostNetwork, Dns: runtimeHostDNS, AntiMalware: runtimeHostAntiMalware}
-	runtimeHostRules := []policy.Rule{runtimeHostRule}
-	runtimeHostPolicy := policy.Policy{Rules: runtimeHostRules}
+	runtimeHostRule := policy.RuntimeHostRule{Name: "example host runtime rule", Collections: []collection.Collection{runtimeHostColl}, Forensic: runtimeHostForensic, Network: runtimeHostNetwork, Dns: runtimeHostDNS, AntiMalware: runtimeHostAntiMalware}
+	runtimeHostRules := []policy.RuntimeHostRule{runtimeHostRule}
+	runtimeHostPolicy := policy.RuntimeHostPolicy{Rules: runtimeHostRules}
 
 	fmt.Printf("\nupdate host runtime policy\n")
-	runtimeHostErr := policy.Update(*client, policy.RuntimeHostEndpoint, runtimeHostPolicy)
+	runtimeHostErr := policy.UpdateRuntimeHost(*client, runtimeHostPolicy)
 	if runtimeHostErr != nil {
 		fmt.Printf("\nfailed to update host runtime policy: %v\n", runtimeHostErr)
 	}
 
 	fmt.Printf("\nget host runtime policy:\n")
-	retrievedPolicy, runtimeHostErr = policy.Get(*client, policy.RuntimeHostEndpoint)
+	retrievedRuntimeHostPolicy, runtimeHostErr := policy.GetRuntimeHost(*client)
 	if runtimeHostErr != nil {
 		fmt.Printf("failed to get host runtime policy: %s\n", runtimeHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedRuntimeHostPolicy.Id, retrievedRuntimeHostPolicy.Rules)
 
 	fmt.Printf("\nupdate host runtime policy\n")
 	runtimeHostRule.Name = "name change"
-	runtimeHostPolicy = policy.Policy{Rules: []policy.Rule{runtimeHostRule}}
-	runtimeHostErr = policy.Update(*client, policy.RuntimeHostEndpoint, runtimeHostPolicy)
+	runtimeHostPolicy = policy.RuntimeHostPolicy{Rules: []policy.RuntimeHostRule{runtimeHostRule}}
+	runtimeHostErr = policy.UpdateRuntimeHost(*client, runtimeHostPolicy)
 	if runtimeHostErr != nil {
 		fmt.Printf("failed to update host runtime policy: %s\n", runtimeHostErr)
 	}
 
 	fmt.Printf("\nget host runtime policy:\n")
-	retrievedPolicy, runtimeHostErr = policy.Get(*client, policy.RuntimeHostEndpoint)
+	retrievedRuntimeHostPolicy, runtimeHostErr = policy.GetRuntimeHost(*client)
 	if runtimeHostErr != nil {
 		fmt.Printf("failed to get host runtime policy: %s\n", runtimeHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedRuntimeHostPolicy.Id, retrievedRuntimeHostPolicy.Rules)
 
 	/*
 		CI IMAGE VULNERABILITY
 	*/
 	vulnerabilityCiImageColl := collection.Collection{Name: "All"}
-	vulnerabilityCiImageRule := policy.Rule{Name: "example CI image vulnerability rule", Collections: []collection.Collection{vulnerabilityCiImageColl}, Effect: "alert"}
-	vulnerabilityCiImagePolicy := policy.Policy{PolicyType: "ciImagesVulnerability", Rules: []policy.Rule{vulnerabilityCiImageRule}}
+	vulnerabilityCiImageRule := policy.VulnerabilityImageRule{Name: "example CI image vulnerability rule", Collections: []collection.Collection{vulnerabilityCiImageColl}, Effect: "alert"}
+	vulnerabilityCiImagePolicy := policy.VulnerabilityImagePolicy{Type: "ciImagesVulnerability", Rules: []policy.VulnerabilityImageRule{vulnerabilityCiImageRule}}
+
 	fmt.Printf("\nupdate CI image vulnerability policy\n")
-	vulnerabilityCiImageErr := policy.Update(*client, policy.VulnerabilityCiImagesEndpoint, vulnerabilityCiImagePolicy)
+	vulnerabilityCiImageErr := policy.UpdateVulnerabilityCiImage(*client, vulnerabilityCiImagePolicy)
 	if vulnerabilityCiImageErr != nil {
 		fmt.Printf("failed to update CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
 	}
 
 	fmt.Printf("\nget CI image vulnerability policy:\n")
-	retrievedPolicy, vulnerabilityCiImageErr = policy.Get(*client, policy.VulnerabilityCiImagesEndpoint)
+	retrievedVulnerabilityImagePolicy, vulnerabilityCiImageErr := policy.GetVulnerabilityCiImage(*client)
 	if vulnerabilityCiImageErr != nil {
 		fmt.Printf("failed to get CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
 
 	fmt.Printf("\nupdate CI image vulnerability policy\n")
 	vulnerabilityCiImageRule.Name = "name change"
-	vulnerabilityCiImagePolicy = policy.Policy{PolicyType: "ciImagesVulnerability", Rules: []policy.Rule{vulnerabilityCiImageRule}}
-	vulnerabilityCiImageErr = policy.Update(*client, policy.VulnerabilityCiImagesEndpoint, vulnerabilityCiImagePolicy)
+	vulnerabilityCiImagePolicy = policy.VulnerabilityImagePolicy{Type: "ciImagesVulnerability", Rules: []policy.VulnerabilityImageRule{vulnerabilityCiImageRule}}
+	vulnerabilityCiImageErr = policy.UpdateVulnerabilityCiImage(*client, vulnerabilityCiImagePolicy)
 	if vulnerabilityCiImageErr != nil {
 		fmt.Printf("failed to update CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
 	}
 
 	fmt.Printf("\nget CI image vulnerability policy:\n")
-	retrievedPolicy, vulnerabilityCiImageErr = policy.Get(*client, policy.VulnerabilityCiImagesEndpoint)
+	retrievedVulnerabilityImagePolicy, vulnerabilityCiImageErr = policy.GetVulnerabilityCiImage(*client)
 	if vulnerabilityCiImageErr != nil {
 		fmt.Printf("failed to get CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
 
 	/*
 		HOST VULNERABILITY
 	*/
 	vulnerabilityHostColl := collection.Collection{Name: "All"}
-	vulnerabilityHostRule := policy.Rule{Name: "example host vulnerability rule", Collections: []collection.Collection{vulnerabilityHostColl}, Effect: "alert"}
-	vulnerabilityHostPolicy := policy.Policy{PolicyType: "hostVulnerability", Rules: []policy.Rule{vulnerabilityHostRule}}
+	vulnerabilityHostRule := policy.VulnerabilityHostRule{Name: "example host vulnerability rule", Collections: []collection.Collection{vulnerabilityHostColl}, Effect: "alert"}
+	vulnerabilityHostPolicy := policy.VulnerabilityHostPolicy{Type: "hostVulnerability", Rules: []policy.VulnerabilityHostRule{vulnerabilityHostRule}}
+
 	fmt.Printf("\nupdate host vulnerability policy\n")
-	vulnerabilityHostErr := policy.Update(*client, policy.VulnerabilityHostEndpoint, vulnerabilityHostPolicy)
+	vulnerabilityHostErr := policy.UpdateVulnerabilityHost(*client, vulnerabilityHostPolicy)
 	if vulnerabilityHostErr != nil {
 		fmt.Printf("failed to update host vulnerability policy: %s\n", vulnerabilityHostErr)
 	}
 
 	fmt.Printf("\nget host vulnerability policy:\n")
-	retrievedPolicy, vulnerabilityHostErr = policy.Get(*client, policy.VulnerabilityHostEndpoint)
+	retrievedVulnerabilityHostPolicy, vulnerabilityHostErr := policy.GetVulnerabilityHost(*client)
 	if vulnerabilityHostErr != nil {
 		fmt.Printf("failed to get host vulnerability policy: %s\n", vulnerabilityHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedVulnerabilityHostPolicy.Id, retrievedVulnerabilityHostPolicy.Rules)
 
 	fmt.Printf("\nupdate host vulnerability policy\n")
 	vulnerabilityHostRule.Name = "name change"
-	vulnerabilityHostPolicy = policy.Policy{PolicyType: "hostVulnerability", Rules: []policy.Rule{vulnerabilityHostRule}}
-	vulnerabilityHostErr = policy.Update(*client, policy.VulnerabilityHostEndpoint, vulnerabilityHostPolicy)
+	vulnerabilityHostPolicy = policy.VulnerabilityHostPolicy{Type: "hostVulnerability", Rules: []policy.VulnerabilityHostRule{vulnerabilityHostRule}}
+	vulnerabilityHostErr = policy.UpdateVulnerabilityHost(*client, vulnerabilityHostPolicy)
 	if vulnerabilityHostErr != nil {
 		fmt.Printf("failed to update host vulnerability policy: %s\n", vulnerabilityHostErr)
 	}
 
 	fmt.Printf("\nget host vulnerability policy:\n")
-	retrievedPolicy, vulnerabilityHostErr = policy.Get(*client, policy.VulnerabilityHostEndpoint)
+	retrievedVulnerabilityHostPolicy, vulnerabilityHostErr = policy.GetVulnerabilityHost(*client)
 	if vulnerabilityHostErr != nil {
 		fmt.Printf("failed to get host vulnerability policy: %s\n", vulnerabilityHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedVulnerabilityHostPolicy.Id, retrievedVulnerabilityHostPolicy.Rules)
 
 	/*
 		IMAGE VULNERABILITY
 	*/
 	vulnerabilityimageColl := collection.Collection{Name: "All"}
-	vulnerabilityimageRule := policy.Rule{Name: "example image vulnerability rule", Collections: []collection.Collection{vulnerabilityimageColl}, Effect: "alert"}
-	vulnerabilityimagePolicy := policy.Policy{PolicyType: "containerVulnerability", Rules: []policy.Rule{vulnerabilityimageRule}}
+	vulnerabilityimageRule := policy.VulnerabilityImageRule{Name: "example image vulnerability rule", Collections: []collection.Collection{vulnerabilityimageColl}, Effect: "alert"}
+	vulnerabilityimagePolicy := policy.VulnerabilityImagePolicy{Type: "containerVulnerability", Rules: []policy.VulnerabilityImageRule{vulnerabilityimageRule}}
 	fmt.Printf("\nupdate image vulnerability policy\n")
-	vulnerabilityimageErr := policy.Update(*client, policy.VulnerabilityImagesEndpoint, vulnerabilityimagePolicy)
+	vulnerabilityimageErr := policy.UpdateVulnerabilityImage(*client, vulnerabilityimagePolicy)
 	if vulnerabilityimageErr != nil {
 		fmt.Printf("failed to update image vulnerability policy: %s\n", vulnerabilityimageErr)
 	}
 
 	fmt.Printf("\nget image vulnerability policy:\n")
-	retrievedPolicy, vulnerabilityimageErr = policy.Get(*client, policy.VulnerabilityImagesEndpoint)
+	retrievedVulnerabilityImagePolicy, vulnerabilityimageErr = policy.GetVulnerabilityImage(*client)
 	if vulnerabilityimageErr != nil {
 		fmt.Printf("failed to get image vulnerability policy: %s\n", vulnerabilityimageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
 
 	fmt.Printf("\nupdate image vulnerability policy\n")
 	vulnerabilityimageRule.Name = "name change"
-	vulnerabilityimagePolicy = policy.Policy{PolicyType: "containerVulnerability", Rules: []policy.Rule{vulnerabilityimageRule}}
-	vulnerabilityimageErr = policy.Update(*client, policy.VulnerabilityImagesEndpoint, vulnerabilityimagePolicy)
+	vulnerabilityimagePolicy = policy.VulnerabilityImagePolicy{Type: "containerVulnerability", Rules: []policy.VulnerabilityImageRule{vulnerabilityimageRule}}
+	vulnerabilityimageErr = policy.UpdateVulnerabilityImage(*client, vulnerabilityimagePolicy)
 	if vulnerabilityimageErr != nil {
 		fmt.Printf("failed to update image vulnerability policy: %s\n", vulnerabilityimageErr)
 	}
 
 	fmt.Printf("\nget image vulnerability policy:\n")
-	retrievedPolicy, vulnerabilityimageErr = policy.Get(*client, policy.VulnerabilityImagesEndpoint)
+	retrievedVulnerabilityImagePolicy, vulnerabilityimageErr = policy.GetVulnerabilityImage(*client)
 	if vulnerabilityimageErr != nil {
 		fmt.Printf("failed to get image vulnerability policy: %s\n", vulnerabilityimageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedPolicy.PolicyId, retrievedPolicy.Rules)
+	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
 
 	/*
 		REGISTRY SETTINGS

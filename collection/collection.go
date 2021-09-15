@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	pcc "github.com/paloaltonetworks/prisma-cloud-compute-go"
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 )
 
-const endpoint = "api/v1/collections"
+const Endpoint = "api/v1/collections"
 
 type Collection struct {
 	AccountIds  []string `json:"accountIDs,omitempty"`
@@ -25,50 +25,40 @@ type Collection struct {
 	Namespaces  []string `json:"namespaces,omitempty"`
 }
 
-func List(client pcc.Client) ([]Collection, error) {
+// Get all collections.
+func List(c pcc.Client) ([]Collection, error) {
 	var ans []Collection
-	if err := client.Communicate(http.MethodGet, endpoint, nil, nil, &ans); err != nil {
-		return ans, err
+	if err := c.Request(http.MethodGet, Endpoint, nil, nil, &ans); err != nil {
+		return nil, fmt.Errorf("error listing collections: %s", err)
 	}
 	return ans, nil
 }
 
-func Get(client pcc.Client, name string) (*Collection, error) {
-	collections, err := List(client)
+// Get a specific collection.
+func Get(c pcc.Client, name string) (*Collection, error) {
+	collections, err := List(c)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error listing collections: %s", err)
 	}
-
 	for _, v := range collections {
 		if v.Name == name {
-			return &v, err
+			return &v, nil
 		}
 	}
-	return nil, fmt.Errorf("Collection %s not found", name)
+	return nil, fmt.Errorf("collection %s not found", name)
 }
 
-func Create(client pcc.Client, collection Collection) error {
-	return createUpdate(client, collection, false)
+// Create a new collection.
+func Create(c pcc.Client, collection Collection) error {
+	return c.Request(http.MethodPost, Endpoint, nil, collection, nil)
 }
 
-func Update(client pcc.Client, collection Collection) error {
-	return createUpdate(client, collection, true)
+// Update an existing collection.
+func Update(c pcc.Client, collection Collection) error {
+	return c.Request(http.MethodPut, fmt.Sprintf("%s/%s", Endpoint, collection.Name), nil, collection, nil)
 }
 
-func Delete(client pcc.Client, name string) error {
-	err := client.Communicate(http.MethodDelete, fmt.Sprintf("%s/%s", endpoint, name), nil, nil, nil)
-	return err
-}
-
-func createUpdate(client pcc.Client, collection Collection, exists bool) error {
-	var method, path string
-	if exists {
-		method = http.MethodPut
-		path = fmt.Sprintf("%s/%s", endpoint, collection.Name)
-	} else {
-		method = http.MethodPost
-		path = endpoint
-	}
-	err := client.Communicate(method, path, nil, collection, nil)
-	return err
+// Delete an existing collection.
+func Delete(c pcc.Client, name string) error {
+	return c.Request(http.MethodDelete, fmt.Sprintf("%s/%s", Endpoint, name), nil, nil, nil)
 }
