@@ -119,7 +119,7 @@ func main() {
 	if complianceCiImageErr != nil {
 		fmt.Printf("failed to get CI image compliance policy: %s\n", complianceCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
+	fmt.Printf("* ci image compliance: %v\n", retrievedCompliancePolicy.Rules)
 
 	fmt.Printf("\nupdate CI image compliance policy\n")
 	complianceCiImageRule.Name = "name change"
@@ -134,7 +134,7 @@ func main() {
 	if complianceCiImageErr != nil {
 		fmt.Printf("failed to get CI image compliance policy: %s\n", complianceCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
+	fmt.Printf("* ci image compliance: %v\n", retrievedCompliancePolicy.Rules)
 
 	/*
 		CONTAINER COMPLIANCE
@@ -158,7 +158,7 @@ func main() {
 	if complianceContainerErr != nil {
 		fmt.Printf("failed to get container compliance policy: %s\n", complianceContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
+	fmt.Printf("* container compliance: %v\n", retrievedCompliancePolicy.Rules)
 
 	fmt.Printf("\nupdate container compliance policy\n")
 	complianceContainerRule.Name = "name change"
@@ -173,7 +173,7 @@ func main() {
 	if complianceContainerErr != nil {
 		fmt.Printf("failed to get container compliance policy: %s\n", complianceContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
+	fmt.Printf("* container compliance: %v\n", retrievedCompliancePolicy.Rules)
 
 	/*
 		HOST COMPLIANCE
@@ -197,7 +197,7 @@ func main() {
 	if complianceHostErr != nil {
 		fmt.Printf("failed to get host compliance policy: %s\n", complianceHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
+	fmt.Printf("* host compliance: %v\n", retrievedCompliancePolicy.Rules)
 
 	fmt.Printf("\nupdate host compliance policy\n")
 	complianceHostRule.Name = "name change"
@@ -212,7 +212,7 @@ func main() {
 	if complianceHostErr != nil {
 		fmt.Printf("failed to get host compliance policy: %s\n", complianceHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedCompliancePolicy.Id, retrievedCompliancePolicy.Rules)
+	fmt.Printf("* host compliance: %v\n", retrievedCompliancePolicy.Rules)
 
 	/*
 		CONTAINER RUNTIME
@@ -223,7 +223,7 @@ func main() {
 		Collections:        []collection.Collection{runtimeContainerColl},
 		AdvancedProtection: true,
 		Dns:                policy.RuntimeContainerDns{DenyEffect: "disable"},
-		Filesystem:         policy.RuntimeContainerFilesystem{Effect: "alert"},
+		Filesystem:         policy.RuntimeContainerFilesystem{DenyEffect: "alert"},
 		Network:            policy.RuntimeContainerNetwork{DenyEffect: "alert"},
 		Processes:          policy.RuntimeContainerProcesses{DenyEffect: "alert"},
 		WildFireAnalysis:   "alert",
@@ -242,7 +242,7 @@ func main() {
 	if runtimeContainerErr != nil {
 		fmt.Printf("failed to get container runtime policy: %s\n", runtimeContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedRuntimeContainerPolicy.Id, retrievedRuntimeContainerPolicy.Rules)
+	fmt.Printf("* container runtime: %v\n", retrievedRuntimeContainerPolicy.Rules)
 
 	fmt.Printf("\nupdate container runtime policy\n")
 	runtimeContainerRule.Name = "name change"
@@ -257,7 +257,7 @@ func main() {
 	if runtimeContainerErr != nil {
 		fmt.Printf("failed to get container runtime policy: %s\n", runtimeContainerErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedRuntimeContainerPolicy.Id, retrievedRuntimeContainerPolicy.Rules)
+	fmt.Printf("* container runtime: %v\n", retrievedRuntimeContainerPolicy.Rules)
 
 	/*
 		HOST RUNTIME
@@ -282,7 +282,7 @@ func main() {
 		UserUnknownOriginBinary:    "alert",
 		EncryptedBinaries:          "alert",
 		SuspiciousElfHeaders:       "alert",
-		TempFsProc:                 "alert",
+		TempFsProcesses:            "alert",
 		ReverseShell:               "alert",
 		WebShell:                   "alert",
 		ExecutionFlowHijack:        "alert",
@@ -306,7 +306,7 @@ func main() {
 	if runtimeHostErr != nil {
 		fmt.Printf("failed to get host runtime policy: %s\n", runtimeHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedRuntimeHostPolicy.Id, retrievedRuntimeHostPolicy.Rules)
+	fmt.Printf("* host runtime: %v\n", retrievedRuntimeHostPolicy.Rules)
 
 	fmt.Printf("\nupdate host runtime policy\n")
 	runtimeHostRule.Name = "name change"
@@ -321,7 +321,7 @@ func main() {
 	if runtimeHostErr != nil {
 		fmt.Printf("failed to get host runtime policy: %s\n", runtimeHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedRuntimeHostPolicy.Id, retrievedRuntimeHostPolicy.Rules)
+	fmt.Printf("* host runtime: %v\n", retrievedRuntimeHostPolicy.Rules)
 
 	/*
 		CI IMAGE VULNERABILITY
@@ -341,7 +341,7 @@ func main() {
 	if vulnerabilityCiImageErr != nil {
 		fmt.Printf("failed to get CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
+	fmt.Printf("* ci image vulnerability: %v\n", retrievedVulnerabilityImagePolicy.Rules)
 
 	fmt.Printf("\nupdate CI image vulnerability policy\n")
 	vulnerabilityCiImageRule.Name = "name change"
@@ -356,7 +356,7 @@ func main() {
 	if vulnerabilityCiImageErr != nil {
 		fmt.Printf("failed to get CI image vulnerability policy: %s\n", vulnerabilityCiImageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
+	fmt.Printf("* ci image vulnerability: %v\n", retrievedVulnerabilityImagePolicy.Rules)
 
 	/*
 		HOST VULNERABILITY
@@ -376,7 +376,7 @@ func main() {
 	if vulnerabilityHostErr != nil {
 		fmt.Printf("failed to get host vulnerability policy: %s\n", vulnerabilityHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedVulnerabilityHostPolicy.Id, retrievedVulnerabilityHostPolicy.Rules)
+	fmt.Printf("* host vulnerability: %v\n", retrievedVulnerabilityHostPolicy.Rules)
 
 	fmt.Printf("\nupdate host vulnerability policy\n")
 	vulnerabilityHostRule.Name = "name change"
@@ -391,7 +391,7 @@ func main() {
 	if vulnerabilityHostErr != nil {
 		fmt.Printf("failed to get host vulnerability policy: %s\n", vulnerabilityHostErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedVulnerabilityHostPolicy.Id, retrievedVulnerabilityHostPolicy.Rules)
+	fmt.Printf("* host vulnerability: %v\n", retrievedVulnerabilityHostPolicy.Rules)
 
 	/*
 		IMAGE VULNERABILITY
@@ -410,7 +410,7 @@ func main() {
 	if vulnerabilityimageErr != nil {
 		fmt.Printf("failed to get image vulnerability policy: %s\n", vulnerabilityimageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
+	fmt.Printf("* image vulnerability: %v\n", retrievedVulnerabilityImagePolicy.Rules)
 
 	fmt.Printf("\nupdate image vulnerability policy\n")
 	vulnerabilityimageRule.Name = "name change"
@@ -425,7 +425,7 @@ func main() {
 	if vulnerabilityimageErr != nil {
 		fmt.Printf("failed to get image vulnerability policy: %s\n", vulnerabilityimageErr)
 	}
-	fmt.Printf("* %s %v\n", retrievedVulnerabilityImagePolicy.Id, retrievedVulnerabilityImagePolicy.Rules)
+	fmt.Printf("* image vulnerability: %v\n", retrievedVulnerabilityImagePolicy.Rules)
 
 	/*
 		REGISTRY SETTINGS

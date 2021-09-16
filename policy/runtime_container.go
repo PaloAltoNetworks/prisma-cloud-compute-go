@@ -11,7 +11,6 @@ import (
 const RuntimeContainerEndpoint = "api/v1/policies/runtime/container"
 
 type RuntimeContainerPolicy struct {
-	Id               string                 `json:"_id,omitempty"`
 	LearningDisabled bool                   `json:"learningDisabled,omitempty"`
 	Rules            []RuntimeContainerRule `json:"rules,omitempty"`
 }
@@ -33,9 +32,9 @@ type RuntimeContainerRule struct {
 }
 
 type RuntimeContainerCustomRule struct {
-	Action []string `json:"action,omitempty"`
-	Effect string   `json:"effect,omitempty"`
-	Id     int      `json:"_id,omitempty"`
+	Action string `json:"action,omitempty"`
+	Effect string `json:"effect,omitempty"`
+	Id     int    `json:"_id,omitempty"`
 }
 
 type RuntimeContainerDns struct {
@@ -49,7 +48,7 @@ type RuntimeContainerFilesystem struct {
 	BackdoorFiles         bool     `json:"backdoorFiles"`
 	CheckNewFiles         bool     `json:"checkNewFiles"`
 	Denied                []string `json:"blacklist,omitempty"`
-	Effect                string   `json:"effect,omitempty"`
+	DenyEffect            string   `json:"effect,omitempty"`
 	SkipEncryptedBinaries bool     `json:"skipEncryptedBinaries"`
 	SuspiciousElfHeaders  bool     `json:"suspiciousELFHeaders"`
 }
@@ -63,7 +62,7 @@ type RuntimeContainerNetwork struct {
 	DeniedOutboundPorts   []RuntimeContainerPort `json:"blacklistOutboundPorts,omitempty"`
 	DenyEffect            string                 `json:"effect,omitempty"`
 	DetectPortScan        bool                   `json:"detectPortScan"`
-	SkipModifiedProc      bool                   `json:"skipModifiedProc"`
+	SkipModifiedProcesses bool                   `json:"skipModifiedProc"`
 	SkipRawSockets        bool                   `json:"skipRawSockets"`
 }
 

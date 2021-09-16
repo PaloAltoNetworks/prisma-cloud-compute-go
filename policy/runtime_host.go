@@ -11,7 +11,6 @@ import (
 const RuntimeHostEndpoint = "api/v1/policies/runtime/host"
 
 type RuntimeHostPolicy struct {
-	Id    string            `json:"_id,omitempty"`
 	Rules []RuntimeHostRule `json:"rules,omitempty"`
 }
 
@@ -40,17 +39,18 @@ type RuntimeHostAntiMalware struct {
 	IntelligenceFeed              string                     `json:"intelligenceFeed,omitempty"`
 	ReverseShell                  string                     `json:"reverseShell,omitempty"`
 	ServiceUnknownOriginBinary    string                     `json:"serviceUnknownOriginBinary,omitempty"`
+	SkipSshTracking               bool                       `json:"skipSSHTracking,omitempty"`
 	SuspiciousElfHeaders          string                     `json:"suspiciousELFHeaders,omitempty"`
-	TempFsProc                    string                     `json:"tempFSProc,omitempty"`
+	TempFsProcesses               string                     `json:"tempFSProc,omitempty"`
 	UserUnknownOriginBinary       string                     `json:"userUnknownOriginBinary,omitempty"`
 	WebShell                      string                     `json:"webShell,omitempty"`
 	WildFireAnalysis              string                     `json:"wildFireAnalysis,omitempty"`
 }
 
 type RuntimeHostCustomRule struct {
-	Action []string `json:"action,omitempty"`
-	Effect string   `json:"effect,omitempty"`
-	Id     int      `json:"_id,omitempty"`
+	Action string `json:"action,omitempty"`
+	Effect string `json:"effect,omitempty"`
+	Id     int    `json:"_id,omitempty"`
 }
 
 type RuntimeHostDns struct {

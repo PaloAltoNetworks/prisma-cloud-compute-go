@@ -15,7 +15,6 @@ const (
 )
 
 type CompliancePolicy struct {
-	Id    string           `json:"_id,omitempty"`
 	Rules []ComplianceRule `json:"rules,omitempty"`
 	Type  string           `json:"policyType,omitempty"`
 }
