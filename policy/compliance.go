@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	ComplianceCiImagesEndpoint  = "api/v1/policies/compliance/ci/images"
-	ComplianceContainerEndpoint = "api/v1/policies/compliance/container"
-	ComplianceHostEndpoint      = "api/v1/policies/compliance/host"
+	ComplianceCiImagesEndpoint   = "api/v1/policies/compliance/ci/images"
+	ComplianceContainerEndpoint  = "api/v1/policies/compliance/container"
+	ComplianceHostEndpoint       = "api/v1/policies/compliance/host"
+	ComplianceServerlessEndpoint = "api/v1/policies/compliance/serverless"
 )
 
 type CompliancePolicy struct {
@@ -67,6 +68,15 @@ func GetComplianceHost(c pcc.Client) (CompliancePolicy, error) {
 	return ans, nil
 }
 
+// Get the current serverless compliance policy.
+func GetComplianceServerless(c pcc.Client) (CompliancePolicy, error) {
+	var ans CompliancePolicy
+	if err := c.Request(http.MethodGet, ComplianceServerlessEndpoint, nil, nil, &ans); err != nil {
+		return ans, fmt.Errorf("error getting serverless compliance policy: %s", err)
+	}
+	return ans, nil
+}
+
 // Update the current CI image compliance policy.
 func UpdateComplianceCiImage(c pcc.Client, policy CompliancePolicy) error {
 	return c.Request(http.MethodPut, ComplianceCiImagesEndpoint, nil, policy, nil)
@@ -80,4 +90,9 @@ func UpdateComplianceContainer(c pcc.Client, policy CompliancePolicy) error {
 // Update the current host compliance policy.
 func UpdateComplianceHost(c pcc.Client, policy CompliancePolicy) error {
 	return c.Request(http.MethodPut, ComplianceHostEndpoint, nil, policy, nil)
+}
+
+// Update the current serverless compliance policy.
+func UpdateComplianceServerless(c pcc.Client, policy CompliancePolicy) error {
+	return c.Request(http.MethodPut, ComplianceServerlessEndpoint, nil, policy, nil)
 }
