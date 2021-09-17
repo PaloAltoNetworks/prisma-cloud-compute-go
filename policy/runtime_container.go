@@ -66,6 +66,12 @@ type RuntimeContainerNetwork struct {
 	SkipRawSockets        bool                   `json:"skipRawSockets"`
 }
 
+type RuntimeContainerPort struct {
+	Deny  bool `json:"deny"`
+	End   int  `json:"end,omitempty"`
+	Start int  `json:"start,omitempty"`
+}
+
 type RuntimeContainerProcesses struct {
 	Allowed              []string `json:"whitelist,omitempty"`
 	CheckCryptoMiners    bool     `json:"checkCryptoMiners"`
@@ -76,12 +82,6 @@ type RuntimeContainerProcesses struct {
 	DenyEffect           string   `json:"effect,omitempty"`
 	SkipModified         bool     `json:"skipModified"`
 	SkipReverseShell     bool     `json:"skipReverseShell"`
-}
-
-type RuntimeContainerPort struct {
-	Deny  bool `json:"deny"`
-	End   int  `json:"end,omitempty"`
-	Start int  `json:"start,omitempty"`
 }
 
 // Get the current container runtime policy.

@@ -7,7 +7,7 @@ import (
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 )
 
-const Endpoint = "api/v1/collections"
+const CollectionsEndpoint = "api/v1/collections"
 
 type Collection struct {
 	AccountIds  []string `json:"accountIDs,omitempty"`
@@ -28,7 +28,7 @@ type Collection struct {
 // Get all collections.
 func List(c pcc.Client) ([]Collection, error) {
 	var ans []Collection
-	if err := c.Request(http.MethodGet, Endpoint, nil, nil, &ans); err != nil {
+	if err := c.Request(http.MethodGet, CollectionsEndpoint, nil, nil, &ans); err != nil {
 		return nil, fmt.Errorf("error listing collections: %s", err)
 	}
 	return ans, nil
@@ -50,15 +50,15 @@ func Get(c pcc.Client, name string) (*Collection, error) {
 
 // Create a new collection.
 func Create(c pcc.Client, collection Collection) error {
-	return c.Request(http.MethodPost, Endpoint, nil, collection, nil)
+	return c.Request(http.MethodPost, CollectionsEndpoint, nil, collection, nil)
 }
 
 // Update an existing collection.
 func Update(c pcc.Client, collection Collection) error {
-	return c.Request(http.MethodPut, fmt.Sprintf("%s/%s", Endpoint, collection.Name), nil, collection, nil)
+	return c.Request(http.MethodPut, fmt.Sprintf("%s/%s", CollectionsEndpoint, collection.Name), nil, collection, nil)
 }
 
 // Delete an existing collection.
 func Delete(c pcc.Client, name string) error {
-	return c.Request(http.MethodDelete, fmt.Sprintf("%s/%s", Endpoint, name), nil, nil, nil)
+	return c.Request(http.MethodDelete, fmt.Sprintf("%s/%s", CollectionsEndpoint, name), nil, nil, nil)
 }

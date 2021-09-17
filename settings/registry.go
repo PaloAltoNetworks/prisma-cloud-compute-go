@@ -1,4 +1,4 @@
-package registry
+package settings
 
 import (
 	"net/http"
@@ -6,13 +6,13 @@ import (
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 )
 
-const Endpoint = "api/v1/settings/registry"
+const SettingsRegistryEndpoint = "api/v1/settings/registry"
 
-type Registry struct {
-	Specifications []Specification `json:"specifications,omitempty"`
+type RegistrySettings struct {
+	Specifications []RegistrySpecification `json:"specifications,omitempty"`
 }
 
-type Specification struct {
+type RegistrySpecification struct {
 	Cap                      int      `json:"cap,omitempty"`
 	Collections              []string `json:"collections,omitempty"`
 	Credential               string   `json:"credentialID,omitempty"`
@@ -31,15 +31,15 @@ type Specification struct {
 }
 
 // Get the current registry scan settings.
-func Get(c pcc.Client) (Registry, error) {
-	var ans Registry
-	if err := c.Request(http.MethodGet, Endpoint, nil, nil, &ans); err != nil {
+func Get(c pcc.Client) (RegistrySettings, error) {
+	var ans RegistrySettings
+	if err := c.Request(http.MethodGet, SettingsRegistryEndpoint, nil, nil, &ans); err != nil {
 		return ans, err
 	}
 	return ans, nil
 }
 
 // Update the current registry scan settings.
-func Update(c pcc.Client, registry Registry) error {
-	return c.Request(http.MethodPut, Endpoint, nil, registry, nil)
+func Update(c pcc.Client, registry RegistrySettings) error {
+	return c.Request(http.MethodPut, SettingsRegistryEndpoint, nil, registry, nil)
 }

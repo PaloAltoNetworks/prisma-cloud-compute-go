@@ -53,6 +53,11 @@ type RuntimeHostCustomRule struct {
 	Id     int    `json:"_id,omitempty"`
 }
 
+type RuntimeHostDeniedProcesses struct {
+	Effect string   `json:"effect,omitempty"`
+	Paths  []string `json:"paths,omitempty"`
+}
+
 type RuntimeHostDns struct {
 	Allowed          []string `json:"allow,omitempty"`
 	Denied           []string `json:"deny,omitempty"`
@@ -92,11 +97,6 @@ type RuntimeHostNetwork struct {
 	DeniedOutboundPorts  []RuntimeHostPort `json:"deniedOutboundPorts,omitempty"`
 	DenyEffect           string            `json:"denyListEffect,omitempty"`
 	IntelligenceFeed     string            `json:"intelligenceFeed,omitempty"`
-}
-
-type RuntimeHostDeniedProcesses struct {
-	Effect string   `json:"effect,omitempty"`
-	Paths  []string `json:"paths,omitempty"`
 }
 
 type RuntimeHostPort struct {

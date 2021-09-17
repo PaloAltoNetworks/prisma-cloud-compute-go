@@ -9,7 +9,7 @@ import (
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/collection"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/policy"
-	"github.com/paloaltonetworks/prisma-cloud-compute-go/settings/registry"
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/settings"
 )
 
 func main() {
@@ -430,7 +430,7 @@ func main() {
 	/*
 		REGISTRY SETTINGS
 	*/
-	registrySpec := registry.Specification{
+	registrySpec := settings.RegistrySpecification{
 		Version:     "2",
 		Registry:    "",
 		Os:          "linux",
@@ -440,16 +440,16 @@ func main() {
 		Tag:         "20.04",
 		Collections: []string{"All"},
 	}
-	reg := registry.Registry{Specifications: []registry.Specification{registrySpec}}
+	reg := settings.RegistrySettings{Specifications: []settings.RegistrySpecification{registrySpec}}
 
 	fmt.Printf("\ncreate registry settings:\n")
-	registryErr := registry.Update(*client, reg)
+	registryErr := settings.Update(*client, reg)
 	if registryErr != nil {
 		fmt.Printf("failed to create registry settings: %s\n", registryErr)
 	}
 
 	fmt.Printf("\nget registry settings:\n")
-	retrievedRegistry, registryErr := registry.Get(*client)
+	retrievedRegistry, registryErr := settings.Get(*client)
 	if registryErr != nil {
 		fmt.Printf("failed to get registry settings: %s\n", registryErr)
 	}
@@ -457,14 +457,14 @@ func main() {
 
 	fmt.Printf("\nupdate registry settings\n")
 	registrySpec.Tag = "21.04"
-	reg = registry.Registry{Specifications: []registry.Specification{registrySpec}}
-	registryErr = registry.Update(*client, reg)
+	reg = settings.RegistrySettings{Specifications: []settings.RegistrySpecification{registrySpec}}
+	registryErr = settings.Update(*client, reg)
 	if registryErr != nil {
 		fmt.Printf("failed to update registry settings: %s\n", registryErr)
 	}
 
 	fmt.Printf("\nget registry settings:\n")
-	retrievedRegistry, registryErr = registry.Get(*client)
+	retrievedRegistry, registryErr = settings.Get(*client)
 	if registryErr != nil {
 		fmt.Printf("failed to get registry settings: %s\n", registryErr)
 	}
