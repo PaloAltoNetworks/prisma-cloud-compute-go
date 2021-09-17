@@ -31,7 +31,7 @@ type RegistrySpecification struct {
 }
 
 // Get the current registry scan settings.
-func Get(c pcc.Client) (RegistrySettings, error) {
+func GetRegistrySettings(c pcc.Client) (RegistrySettings, error) {
 	var ans RegistrySettings
 	if err := c.Request(http.MethodGet, SettingsRegistryEndpoint, nil, nil, &ans); err != nil {
 		return ans, err
@@ -40,6 +40,6 @@ func Get(c pcc.Client) (RegistrySettings, error) {
 }
 
 // Update the current registry scan settings.
-func Update(c pcc.Client, registry RegistrySettings) error {
+func UpdateRegistrySettings(c pcc.Client, registry RegistrySettings) error {
 	return c.Request(http.MethodPut, SettingsRegistryEndpoint, nil, registry, nil)
 }
