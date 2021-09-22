@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/paloaltonetworks/prisma-cloud-compute-go/auth"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/collection"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/policy"
@@ -442,7 +443,7 @@ func main() {
 	}
 	reg := settings.RegistrySettings{Specifications: []settings.RegistrySpecification{registrySpec}}
 
-	fmt.Printf("\ncreate registry settings:\n")
+	fmt.Printf("\ncreate registry settings\n")
 	registryErr := settings.UpdateRegistrySettings(*client, reg)
 	if registryErr != nil {
 		fmt.Printf("failed to create registry settings: %s\n", registryErr)
@@ -469,4 +470,106 @@ func main() {
 		fmt.Printf("failed to get registry settings: %s\n", registryErr)
 	}
 	fmt.Printf("* %v\n", retrievedRegistry)
+
+	/*
+		USERS
+	*/
+	user := auth.User{
+		Username: "test user",
+		Password: "test password",
+		AuthType: "basic",
+		Role:     "user",
+	}
+
+	fmt.Printf("\ncreate user\n")
+	userErr := auth.CreateUser(*client, user)
+	if userErr != nil {
+		fmt.Printf("failed to create user: %s\n", userErr)
+	}
+
+	fmt.Printf("\nget users:\n")
+	retrievedUsers, userErr := auth.GetUsers(*client)
+	if userErr != nil {
+		fmt.Printf("failed to get users: %s\n", userErr)
+	}
+	fmt.Printf("* %v\n", retrievedUsers)
+
+	fmt.Printf("\nupdate user\n")
+	user.Role = "vulnerabilityManager"
+	userErr = auth.UpdateUser(*client, user)
+	if userErr != nil {
+		fmt.Printf("failed to update user: %s\n", userErr)
+	}
+
+	fmt.Printf("\nget users:\n")
+	retrievedUsers, userErr = auth.GetUsers(*client)
+	if userErr != nil {
+		fmt.Printf("failed to get users: %s\n", userErr)
+	}
+	fmt.Printf("* %v\n", retrievedUsers)
+
+	fmt.Printf("\ndelete user\n")
+	userErr = auth.DeleteUser(*client, user.Username)
+	if userErr != nil {
+		fmt.Printf("failed to delete user: %s\n", userErr)
+	}
+
+	fmt.Printf("\nget users:\n")
+	retrievedUsers, userErr = auth.GetUsers(*client)
+	if userErr != nil {
+		fmt.Printf("failed to get users: %s\n", userErr)
+	}
+	fmt.Printf("* %v\n", retrievedUsers)
+
+	/*
+		GROUPS
+	*/
+	group := auth.Group{
+		Name: "test group",
+		Users: []auth.GroupUser{
+			{
+				Username: "admin",
+			},
+		},
+	}
+
+	fmt.Printf("\ncreate group\n")
+	groupErr := auth.CreateGroup(*client, group)
+	if groupErr != nil {
+		fmt.Printf("failed to create group: %s\n", groupErr)
+	}
+
+	fmt.Printf("\nget groups:\n")
+	retrievedGroups, groupErr := auth.GetGroups(*client)
+	if groupErr != nil {
+		fmt.Printf("failed to get groups: %s\n", groupErr)
+	}
+	fmt.Printf("* %+v\n", retrievedGroups)
+
+	fmt.Printf("\nupdate group\n")
+	group.Users = make([]auth.GroupUser, 0)
+	groupErr = auth.UpdateGroup(*client, group)
+	if groupErr != nil {
+		fmt.Printf("failed to update group: %s\n", groupErr)
+	}
+
+	fmt.Printf("\nget groups:\n")
+	retrievedGroups, groupErr = auth.GetGroups(*client)
+	if groupErr != nil {
+		fmt.Printf("failed to get groups: %s\n", groupErr)
+	}
+	fmt.Printf("* %+v\n", retrievedGroups)
+
+	fmt.Printf("\ndelete group\n")
+	groupErr = auth.DeleteGroup(*client, group.Name)
+	if groupErr != nil {
+		fmt.Printf("failed to delete group: %s\n", groupErr)
+	}
+
+	fmt.Printf("\nget groups:\n")
+	retrievedGroups, groupErr = auth.GetGroups(*client)
+	if groupErr != nil {
+		fmt.Printf("failed to get groups: %s\n", groupErr)
+	}
+	fmt.Printf("* %+v\n", retrievedGroups)
 }
