@@ -492,7 +492,7 @@ func main() {
 	if userErr != nil {
 		fmt.Printf("failed to get users: %s\n", userErr)
 	}
-	fmt.Printf("* %v\n", retrievedUsers)
+	fmt.Printf("* %+v\n", retrievedUsers)
 
 	fmt.Printf("\nupdate user\n")
 	user.Role = "vulnerabilityManager"
@@ -506,7 +506,7 @@ func main() {
 	if userErr != nil {
 		fmt.Printf("failed to get users: %s\n", userErr)
 	}
-	fmt.Printf("* %v\n", retrievedUsers)
+	fmt.Printf("* %+v\n", retrievedUsers)
 
 	fmt.Printf("\ndelete user\n")
 	userErr = auth.DeleteUser(*client, user.Username)
@@ -519,7 +519,7 @@ func main() {
 	if userErr != nil {
 		fmt.Printf("failed to get users: %s\n", userErr)
 	}
-	fmt.Printf("* %v\n", retrievedUsers)
+	fmt.Printf("* %+v\n", retrievedUsers)
 
 	/*
 		GROUPS
@@ -572,4 +572,64 @@ func main() {
 		fmt.Printf("failed to get groups: %s\n", groupErr)
 	}
 	fmt.Printf("* %+v\n", retrievedGroups)
+
+	/*
+		ROLES
+	*/
+	role := auth.Role{
+		Name: "test role",
+		Permissions: []auth.RolePermission{
+			{
+				Name:      "radarsCloud",
+				ReadWrite: false,
+			},
+			{
+				Name:      "user",
+				ReadWrite: true,
+			},
+		},
+	}
+
+	fmt.Printf("\ncreate role\n")
+	roleErr := auth.CreateRole(*client, role)
+	if roleErr != nil {
+		fmt.Printf("failed to create role: %s\n", roleErr)
+	}
+
+	fmt.Printf("\nget roles:\n")
+	retrievedRoles, roleErr := auth.GetRole(*client, role.Name)
+	if roleErr != nil {
+		fmt.Printf("failed to get role: %s\n", roleErr)
+	}
+	fmt.Printf("* %+v\n", retrievedRoles)
+
+	fmt.Printf("\nupdate role\n")
+	role.Permissions = append(role.Permissions, auth.RolePermission{
+		Name:      "accessUI",
+		ReadWrite: false,
+	})
+	roleErr = auth.UpdateRole(*client, role)
+	if roleErr != nil {
+		fmt.Printf("failed to update role: %s\n", roleErr)
+	}
+
+	fmt.Printf("\nget roles:\n")
+	retrievedRoles, roleErr = auth.GetRole(*client, role.Name)
+	if roleErr != nil {
+		fmt.Printf("failed to get role: %s\n", roleErr)
+	}
+	fmt.Printf("* %+v\n", retrievedRoles)
+
+	fmt.Printf("\ndelete role\n")
+	roleErr = auth.DeleteRole(*client, role.Name)
+	if roleErr != nil {
+		fmt.Printf("failed to delete role: %s\n", roleErr)
+	}
+
+	fmt.Printf("\nget roles:\n")
+	retrievedRoles, roleErr = auth.GetRole(*client, role.Name)
+	if roleErr != nil {
+		fmt.Printf("failed to get role: %s\n", roleErr)
+	}
+	fmt.Printf("* %+v\n", retrievedRoles)
 }
