@@ -31,12 +31,26 @@ type GroupUser struct {
 }
 
 // Get all groups.
-func GetGroups(c pcc.Client) ([]Group, error) {
+func ListGroups(c pcc.Client) ([]Group, error) {
 	var ans []Group
 	if err := c.Request(http.MethodGet, GroupsEndpoint, nil, nil, &ans); err != nil {
 		return nil, fmt.Errorf("error getting groups: %s", err)
 	}
 	return ans, nil
+}
+
+// Get a specific group.
+func GetGroup(c pcc.Client, name string) (*Group, error) {
+	groups, err := ListGroups(c)
+	if err != nil {
+		return nil, fmt.Errorf("error getting group '%s': %s", name, err)
+	}
+	for _, val := range groups {
+		if val.Name == name {
+			return &val, nil
+		}
+	}
+	return nil, fmt.Errorf("group '%s' not found", name)
 }
 
 // Create a new group.

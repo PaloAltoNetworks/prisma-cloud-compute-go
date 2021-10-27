@@ -26,7 +26,7 @@ type Collection struct {
 }
 
 // Get all collections.
-func List(c pcc.Client) ([]Collection, error) {
+func ListCollections(c pcc.Client) ([]Collection, error) {
 	var ans []Collection
 	if err := c.Request(http.MethodGet, CollectionsEndpoint, nil, nil, &ans); err != nil {
 		return nil, fmt.Errorf("error listing collections: %s", err)
@@ -35,30 +35,30 @@ func List(c pcc.Client) ([]Collection, error) {
 }
 
 // Get a specific collection.
-func Get(c pcc.Client, name string) (*Collection, error) {
-	collections, err := List(c)
+func GetCollection(c pcc.Client, name string) (*Collection, error) {
+	collections, err := ListCollections(c)
 	if err != nil {
-		return nil, fmt.Errorf("error listing collections: %s", err)
+		return nil, fmt.Errorf("error getting collection '%s': %s", name, err)
 	}
-	for _, v := range collections {
-		if v.Name == name {
-			return &v, nil
+	for _, val := range collections {
+		if val.Name == name {
+			return &val, nil
 		}
 	}
-	return nil, fmt.Errorf("collection %s not found", name)
+	return nil, fmt.Errorf("collection '%s' not found", name)
 }
 
 // Create a new collection.
-func Create(c pcc.Client, collection Collection) error {
+func CreateCollection(c pcc.Client, collection Collection) error {
 	return c.Request(http.MethodPost, CollectionsEndpoint, nil, collection, nil)
 }
 
 // Update an existing collection.
-func Update(c pcc.Client, collection Collection) error {
+func UpdateCollection(c pcc.Client, collection Collection) error {
 	return c.Request(http.MethodPut, fmt.Sprintf("%s/%s", CollectionsEndpoint, collection.Name), nil, collection, nil)
 }
 
 // Delete an existing collection.
-func Delete(c pcc.Client, name string) error {
+func DeleteCollection(c pcc.Client, name string) error {
 	return c.Request(http.MethodDelete, fmt.Sprintf("%s/%s", CollectionsEndpoint, name), nil, nil, nil)
 }

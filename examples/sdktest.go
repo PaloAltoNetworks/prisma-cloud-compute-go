@@ -42,14 +42,14 @@ func main() {
 	*/
 	fmt.Printf("create collection\n")
 	newColl := collection.Collection{Name: "My Collection"}
-	err = collection.Create(*client, newColl)
+	err = collection.CreateCollection(*client, newColl)
 	if err != nil {
 		fmt.Printf("Failed to create collection: %s\n", err)
 		return
 	}
 
 	fmt.Printf("\nlist collections:\n")
-	colls, err := collection.List(*client)
+	colls, err := collection.ListCollections(*client)
 	if err != nil {
 		fmt.Printf("Failed to list collections: %s\n", err)
 	}
@@ -59,7 +59,7 @@ func main() {
 	}
 
 	fmt.Printf("\nget collection:\n")
-	coll, err := collection.Get(*client, "My Collection")
+	coll, err := collection.GetCollection(*client, "My Collection")
 	if err != nil {
 		fmt.Printf("Failed to get collection: %s\n", err)
 	}
@@ -67,13 +67,13 @@ func main() {
 
 	fmt.Printf("\nupdate collection\n")
 	existingColl := collection.Collection{Name: "My Collection", Color: "#FFFFFF"}
-	err = collection.Update(*client, existingColl)
+	err = collection.UpdateCollection(*client, existingColl)
 	if err != nil {
 		fmt.Printf("Failed to update collection: %s\n", err)
 	}
 
 	fmt.Printf("\nlist collections:\n")
-	colls, err = collection.List(*client)
+	colls, err = collection.ListCollections(*client)
 	if err != nil {
 		fmt.Printf("Failed to list collections: %s\n", err)
 	}
@@ -83,13 +83,13 @@ func main() {
 	}
 
 	fmt.Printf("\ndelete collection\n")
-	err = collection.Delete(*client, "My Collection")
+	err = collection.DeleteCollection(*client, "My Collection")
 	if err != nil {
 		fmt.Printf("Failed to delete collection: %s\n", err)
 	}
 
 	fmt.Printf("\nlist collections:\n")
-	colls, err = collection.List(*client)
+	colls, err = collection.ListCollections(*client)
 	if err != nil {
 		fmt.Printf("Failed to list collections: %s\n", err)
 	}
@@ -487,8 +487,8 @@ func main() {
 		fmt.Printf("failed to create user: %s\n", userErr)
 	}
 
-	fmt.Printf("\nget users:\n")
-	retrievedUsers, userErr := auth.GetUsers(*client)
+	fmt.Printf("\nlist users:\n")
+	retrievedUsers, userErr := auth.ListUsers(*client)
 	if userErr != nil {
 		fmt.Printf("failed to get users: %s\n", userErr)
 	}
@@ -501,8 +501,8 @@ func main() {
 		fmt.Printf("failed to update user: %s\n", userErr)
 	}
 
-	fmt.Printf("\nget users:\n")
-	retrievedUsers, userErr = auth.GetUsers(*client)
+	fmt.Printf("\nlist users:\n")
+	retrievedUsers, userErr = auth.ListUsers(*client)
 	if userErr != nil {
 		fmt.Printf("failed to get users: %s\n", userErr)
 	}
@@ -514,8 +514,8 @@ func main() {
 		fmt.Printf("failed to delete user: %s\n", userErr)
 	}
 
-	fmt.Printf("\nget users:\n")
-	retrievedUsers, userErr = auth.GetUsers(*client)
+	fmt.Printf("\nlist users:\n")
+	retrievedUsers, userErr = auth.ListUsers(*client)
 	if userErr != nil {
 		fmt.Printf("failed to get users: %s\n", userErr)
 	}
@@ -539,8 +539,8 @@ func main() {
 		fmt.Printf("failed to create group: %s\n", groupErr)
 	}
 
-	fmt.Printf("\nget groups:\n")
-	retrievedGroups, groupErr := auth.GetGroups(*client)
+	fmt.Printf("\nlist groups:\n")
+	retrievedGroups, groupErr := auth.ListGroups(*client)
 	if groupErr != nil {
 		fmt.Printf("failed to get groups: %s\n", groupErr)
 	}
@@ -553,8 +553,8 @@ func main() {
 		fmt.Printf("failed to update group: %s\n", groupErr)
 	}
 
-	fmt.Printf("\nget groups:\n")
-	retrievedGroups, groupErr = auth.GetGroups(*client)
+	fmt.Printf("\nlist groups:\n")
+	retrievedGroups, groupErr = auth.ListGroups(*client)
 	if groupErr != nil {
 		fmt.Printf("failed to get groups: %s\n", groupErr)
 	}
@@ -566,8 +566,8 @@ func main() {
 		fmt.Printf("failed to delete group: %s\n", groupErr)
 	}
 
-	fmt.Printf("\nget groups:\n")
-	retrievedGroups, groupErr = auth.GetGroups(*client)
+	fmt.Printf("\nlist groups:\n")
+	retrievedGroups, groupErr = auth.ListGroups(*client)
 	if groupErr != nil {
 		fmt.Printf("failed to get groups: %s\n", groupErr)
 	}
