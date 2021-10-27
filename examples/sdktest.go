@@ -474,7 +474,7 @@ func main() {
 	/*
 		USERS
 	*/
-	user := auth.User{
+/*	user := auth.User{
 		Username: "test user",
 		Password: "test password",
 		AuthType: "basic",
@@ -520,11 +520,11 @@ func main() {
 		fmt.Printf("failed to get users: %s\n", userErr)
 	}
 	fmt.Printf("* %+v\n", retrievedUsers)
-
+*/
 	/*
 		GROUPS
 	*/
-	group := auth.Group{
+/*	group := auth.Group{
 		Name: "test group",
 		Users: []auth.GroupUser{
 			{
@@ -572,11 +572,11 @@ func main() {
 		fmt.Printf("failed to get groups: %s\n", groupErr)
 	}
 	fmt.Printf("* %+v\n", retrievedGroups)
-
+*/
 	/*
 		ROLES
 	*/
-	role := auth.Role{
+/*	role := auth.Role{
 		Name: "test role",
 		Permissions: []auth.RolePermission{
 			{
@@ -632,4 +632,58 @@ func main() {
 		fmt.Printf("failed to get role: %s\n", roleErr)
 	}
 	fmt.Printf("* %+v\n", retrievedRoles)
+*/	
+
+	/*
+		CREDENTIALS
+	*/
+	credential := auth.Credential{
+	    Secret: auth.Secret {
+	      Encrypted: "",
+	      Plain: "test",
+	    },
+//	    ServiceAccount: {},
+	    Type: "basic",
+	    Description: "",
+	    SkipVerify: false,
+	    Id: "test",
+	    AccountID: "test",
+	}
+
+	fmt.Printf("\ncreate credential\n")
+	credentialErr := auth.CreateCredential(*client, credential)
+	if credentialErr != nil {
+		fmt.Printf("failed to create credential: %s\n", credentialErr)
+	}
+
+	fmt.Printf("\nlist credentials:\n")
+	credentials, err := auth.ListCredentials(*client)
+	if err != nil {
+		fmt.Printf("Failed to list credentials: %s\n", err)
+	}
+	for _, v := range credentials {
+		fmt.Printf("* %s\n", v.Id)
+	}
+
+	fmt.Printf("\nupdate credential\n")
+	credential.AccountID = "test update"
+	credentialErr = auth.UpdateCredential(*client, credential)
+	if credentialErr != nil {
+		fmt.Printf("failed to update credential: %s\n", credentialErr)
+	}
+
+	fmt.Printf("\ndelete credential\n")
+	credentialErr = auth.DeleteCredential(*client, credential.Id)
+	if credentialErr != nil {
+		fmt.Printf("failed to delete credential: %s\n", credentialErr)
+	}
+
+	fmt.Printf("\nlist credentials:\n")
+	credentials, err = auth.ListCredentials(*client)
+	if err != nil {
+		fmt.Printf("Failed to list credentials: %s\n", err)
+	}
+	for _, v := range credentials {
+		fmt.Printf("* %s\n", v.Id)
+	}	
 }
