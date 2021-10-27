@@ -34,7 +34,7 @@ type GroupUser struct {
 func ListGroups(c pcc.Client) ([]Group, error) {
 	var ans []Group
 	if err := c.Request(http.MethodGet, GroupsEndpoint, nil, nil, &ans); err != nil {
-		return nil, fmt.Errorf("error getting groups: %s", err)
+		return nil, fmt.Errorf("error listing groups: %s", err)
 	}
 	return ans, nil
 }

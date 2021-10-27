@@ -26,7 +26,7 @@ type UserPermission struct {
 func ListUsers(c pcc.Client) ([]User, error) {
 	var ans []User
 	if err := c.Request(http.MethodGet, UsersEndpoint, nil, nil, &ans); err != nil {
-		return nil, fmt.Errorf("error getting users: %s", err)
+		return nil, fmt.Errorf("error listing users: %s", err)
 	}
 	return ans, nil
 }
