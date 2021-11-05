@@ -65,6 +65,20 @@ func ListCredentials(c pcc.Client) ([]Credential, error) {
 	return ans, nil
 }
 
+// Get a specific credential.
+func GetCredential(c pcc.Client, name string) (*Credential, error) {
+	credentials, err := ListCredentials(c)
+	if err != nil {
+		return nil, fmt.Errorf("error getting credential '%s': %s", name, err)
+	}
+	for _, val := range credentials {
+		if val.Id == name {
+			return &val, nil
+		}
+	}
+	return nil, fmt.Errorf("credential '%s' not found", name)
+}
+
 // Create a new credential.
 func CreateCredential(c pcc.Client, credential Credential) error {
 	return c.Request(http.MethodPost, CredentialsEndpoint, nil, credential, nil)
