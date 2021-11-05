@@ -474,184 +474,184 @@ func main() {
 	/*
 		USERS
 	*/
-/*	user := auth.User{
-		Username: "test user",
-		Password: "test password",
-		AuthType: "basic",
-		Role:     "user",
-	}
+	/*	user := auth.User{
+			Username: "test user",
+			Password: "test password",
+			AuthType: "basic",
+			Role:     "user",
+		}
 
-	fmt.Printf("\ncreate user\n")
-	userErr := auth.CreateUser(*client, user)
-	if userErr != nil {
-		fmt.Printf("failed to create user: %s\n", userErr)
-	}
+		fmt.Printf("\ncreate user\n")
+		userErr := auth.CreateUser(*client, user)
+		if userErr != nil {
+			fmt.Printf("failed to create user: %s\n", userErr)
+		}
 
-	fmt.Printf("\nlist users:\n")
-	retrievedUsers, userErr := auth.ListUsers(*client)
-	if userErr != nil {
-		fmt.Printf("failed to get users: %s\n", userErr)
-	}
-	fmt.Printf("* %+v\n", retrievedUsers)
+		fmt.Printf("\nlist users:\n")
+		retrievedUsers, userErr := auth.ListUsers(*client)
+		if userErr != nil {
+			fmt.Printf("failed to get users: %s\n", userErr)
+		}
+		fmt.Printf("* %+v\n", retrievedUsers)
 
-	fmt.Printf("\nupdate user\n")
-	user.Role = "vulnerabilityManager"
-	userErr = auth.UpdateUser(*client, user)
-	if userErr != nil {
-		fmt.Printf("failed to update user: %s\n", userErr)
-	}
+		fmt.Printf("\nupdate user\n")
+		user.Role = "vulnerabilityManager"
+		userErr = auth.UpdateUser(*client, user)
+		if userErr != nil {
+			fmt.Printf("failed to update user: %s\n", userErr)
+		}
 
-	fmt.Printf("\nlist users:\n")
-	retrievedUsers, userErr = auth.ListUsers(*client)
-	if userErr != nil {
-		fmt.Printf("failed to get users: %s\n", userErr)
-	}
-	fmt.Printf("* %+v\n", retrievedUsers)
+		fmt.Printf("\nlist users:\n")
+		retrievedUsers, userErr = auth.ListUsers(*client)
+		if userErr != nil {
+			fmt.Printf("failed to get users: %s\n", userErr)
+		}
+		fmt.Printf("* %+v\n", retrievedUsers)
 
-	fmt.Printf("\ndelete user\n")
-	userErr = auth.DeleteUser(*client, user.Username)
-	if userErr != nil {
-		fmt.Printf("failed to delete user: %s\n", userErr)
-	}
+		fmt.Printf("\ndelete user\n")
+		userErr = auth.DeleteUser(*client, user.Username)
+		if userErr != nil {
+			fmt.Printf("failed to delete user: %s\n", userErr)
+		}
 
-	fmt.Printf("\nlist users:\n")
-	retrievedUsers, userErr = auth.ListUsers(*client)
-	if userErr != nil {
-		fmt.Printf("failed to get users: %s\n", userErr)
-	}
-	fmt.Printf("* %+v\n", retrievedUsers)
-*/
+		fmt.Printf("\nlist users:\n")
+		retrievedUsers, userErr = auth.ListUsers(*client)
+		if userErr != nil {
+			fmt.Printf("failed to get users: %s\n", userErr)
+		}
+		fmt.Printf("* %+v\n", retrievedUsers)
+	*/
 	/*
 		GROUPS
 	*/
-/*	group := auth.Group{
-		Name: "test group",
-		Users: []auth.GroupUser{
-			{
-				Username: "admin",
+	/*	group := auth.Group{
+			Name: "test group",
+			Users: []auth.GroupUser{
+				{
+					Username: "admin",
+				},
 			},
-		},
-	}
+		}
 
-	fmt.Printf("\ncreate group\n")
-	groupErr := auth.CreateGroup(*client, group)
-	if groupErr != nil {
-		fmt.Printf("failed to create group: %s\n", groupErr)
-	}
+		fmt.Printf("\ncreate group\n")
+		groupErr := auth.CreateGroup(*client, group)
+		if groupErr != nil {
+			fmt.Printf("failed to create group: %s\n", groupErr)
+		}
 
-	fmt.Printf("\nlist groups:\n")
-	retrievedGroups, groupErr := auth.ListGroups(*client)
-	if groupErr != nil {
-		fmt.Printf("failed to get groups: %s\n", groupErr)
-	}
-	fmt.Printf("* %+v\n", retrievedGroups)
+		fmt.Printf("\nlist groups:\n")
+		retrievedGroups, groupErr := auth.ListGroups(*client)
+		if groupErr != nil {
+			fmt.Printf("failed to get groups: %s\n", groupErr)
+		}
+		fmt.Printf("* %+v\n", retrievedGroups)
 
-	fmt.Printf("\nupdate group\n")
-	group.Users = make([]auth.GroupUser, 0)
-	groupErr = auth.UpdateGroup(*client, group)
-	if groupErr != nil {
-		fmt.Printf("failed to update group: %s\n", groupErr)
-	}
+		fmt.Printf("\nupdate group\n")
+		group.Users = make([]auth.GroupUser, 0)
+		groupErr = auth.UpdateGroup(*client, group)
+		if groupErr != nil {
+			fmt.Printf("failed to update group: %s\n", groupErr)
+		}
 
-	fmt.Printf("\nlist groups:\n")
-	retrievedGroups, groupErr = auth.ListGroups(*client)
-	if groupErr != nil {
-		fmt.Printf("failed to get groups: %s\n", groupErr)
-	}
-	fmt.Printf("* %+v\n", retrievedGroups)
+		fmt.Printf("\nlist groups:\n")
+		retrievedGroups, groupErr = auth.ListGroups(*client)
+		if groupErr != nil {
+			fmt.Printf("failed to get groups: %s\n", groupErr)
+		}
+		fmt.Printf("* %+v\n", retrievedGroups)
 
-	fmt.Printf("\ndelete group\n")
-	groupErr = auth.DeleteGroup(*client, group.Name)
-	if groupErr != nil {
-		fmt.Printf("failed to delete group: %s\n", groupErr)
-	}
+		fmt.Printf("\ndelete group\n")
+		groupErr = auth.DeleteGroup(*client, group.Name)
+		if groupErr != nil {
+			fmt.Printf("failed to delete group: %s\n", groupErr)
+		}
 
-	fmt.Printf("\nlist groups:\n")
-	retrievedGroups, groupErr = auth.ListGroups(*client)
-	if groupErr != nil {
-		fmt.Printf("failed to get groups: %s\n", groupErr)
-	}
-	fmt.Printf("* %+v\n", retrievedGroups)
-*/
+		fmt.Printf("\nlist groups:\n")
+		retrievedGroups, groupErr = auth.ListGroups(*client)
+		if groupErr != nil {
+			fmt.Printf("failed to get groups: %s\n", groupErr)
+		}
+		fmt.Printf("* %+v\n", retrievedGroups)
+	*/
 	/*
 		ROLES
 	*/
-/*	role := auth.Role{
-		Name: "test role",
-		Permissions: []auth.RolePermission{
-			{
-				Name:      "radarsCloud",
-				ReadWrite: false,
+	/*	role := auth.Role{
+			Name: "test role",
+			Permissions: []auth.RolePermission{
+				{
+					Name:      "radarsCloud",
+					ReadWrite: false,
+				},
+				{
+					Name:      "user",
+					ReadWrite: true,
+				},
 			},
-			{
-				Name:      "user",
-				ReadWrite: true,
-			},
-		},
-	}
+		}
 
-	fmt.Printf("\ncreate role\n")
-	roleErr := auth.CreateRole(*client, role)
-	if roleErr != nil {
-		fmt.Printf("failed to create role: %s\n", roleErr)
-	}
+		fmt.Printf("\ncreate role\n")
+		roleErr := auth.CreateRole(*client, role)
+		if roleErr != nil {
+			fmt.Printf("failed to create role: %s\n", roleErr)
+		}
 
-	fmt.Printf("\nget roles:\n")
-	retrievedRoles, roleErr := auth.GetRole(*client, role.Name)
-	if roleErr != nil {
-		fmt.Printf("failed to get role: %s\n", roleErr)
-	}
-	fmt.Printf("* %+v\n", retrievedRoles)
+		fmt.Printf("\nget roles:\n")
+		retrievedRoles, roleErr := auth.GetRole(*client, role.Name)
+		if roleErr != nil {
+			fmt.Printf("failed to get role: %s\n", roleErr)
+		}
+		fmt.Printf("* %+v\n", retrievedRoles)
 
-	fmt.Printf("\nupdate role\n")
-	role.Permissions = append(role.Permissions, auth.RolePermission{
-		Name:      "accessUI",
-		ReadWrite: false,
-	})
-	roleErr = auth.UpdateRole(*client, role)
-	if roleErr != nil {
-		fmt.Printf("failed to update role: %s\n", roleErr)
-	}
+		fmt.Printf("\nupdate role\n")
+		role.Permissions = append(role.Permissions, auth.RolePermission{
+			Name:      "accessUI",
+			ReadWrite: false,
+		})
+		roleErr = auth.UpdateRole(*client, role)
+		if roleErr != nil {
+			fmt.Printf("failed to update role: %s\n", roleErr)
+		}
 
-	fmt.Printf("\nget roles:\n")
-	retrievedRoles, roleErr = auth.GetRole(*client, role.Name)
-	if roleErr != nil {
-		fmt.Printf("failed to get role: %s\n", roleErr)
-	}
-	fmt.Printf("* %+v\n", retrievedRoles)
+		fmt.Printf("\nget roles:\n")
+		retrievedRoles, roleErr = auth.GetRole(*client, role.Name)
+		if roleErr != nil {
+			fmt.Printf("failed to get role: %s\n", roleErr)
+		}
+		fmt.Printf("* %+v\n", retrievedRoles)
 
-	fmt.Printf("\ndelete role\n")
-	roleErr = auth.DeleteRole(*client, role.Name)
-	if roleErr != nil {
-		fmt.Printf("failed to delete role: %s\n", roleErr)
-	}
+		fmt.Printf("\ndelete role\n")
+		roleErr = auth.DeleteRole(*client, role.Name)
+		if roleErr != nil {
+			fmt.Printf("failed to delete role: %s\n", roleErr)
+		}
 
-	fmt.Printf("\nget roles:\n")
-	retrievedRoles, roleErr = auth.GetRole(*client, role.Name)
-	if roleErr != nil {
-		fmt.Printf("failed to get role: %s\n", roleErr)
-	}
-	fmt.Printf("* %+v\n", retrievedRoles)
-*/	
+		fmt.Printf("\nget roles:\n")
+		retrievedRoles, roleErr = auth.GetRole(*client, role.Name)
+		if roleErr != nil {
+			fmt.Printf("failed to get role: %s\n", roleErr)
+		}
+		fmt.Printf("* %+v\n", retrievedRoles)
+	*/
 
 	/*
 		CREDENTIALS
 	*/
 	credential := auth.Credential{
-	    Secret: auth.Secret {
-	      Encrypted: "",
-	      Plain: "test",
-	    },
-//	    ServiceAccount: {},
-	    Type: "basic",
-	    Description: "",
-	    SkipVerify: false,
-	    Id: "test",
-	    AccountID: "test",
+		Secret: auth.Secret{
+			Encrypted: "",
+			Plain:     "test",
+		},
+		//	    ServiceAccount: {},
+		Type:        "basic",
+		Description: "",
+		SkipVerify:  false,
+		Id:          "test",
+		AccountID:   "test",
 	}
 
 	fmt.Printf("\ncreate credential\n")
-	credentialErr := auth.CreateCredential(*client, credential)
+	credentialErr := auth.UpdateCredential(*client, credential)
 	if credentialErr != nil {
 		fmt.Printf("failed to create credential: %s\n", credentialErr)
 	}
@@ -685,5 +685,5 @@ func main() {
 	}
 	for _, v := range credentials {
 		fmt.Printf("* %s\n", v.Id)
-	}	
+	}
 }

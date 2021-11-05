@@ -79,14 +79,9 @@ func GetCredential(c pcc.Client, name string) (*Credential, error) {
 	return nil, fmt.Errorf("credential '%s' not found", name)
 }
 
-// Create a new credential.
-func CreateCredential(c pcc.Client, credential Credential) error {
-	return c.Request(http.MethodPost, CredentialsEndpoint, nil, credential, nil)
-}
-
-// Update an existing credential.
+// Create a new or update an existing credential.
 func UpdateCredential(c pcc.Client, credential Credential) error {
-	return c.Request(http.MethodPut, CredentialsEndpoint, nil, credential, nil)
+	return c.Request(http.MethodPost, CredentialsEndpoint, nil, credential, nil)
 }
 
 // Delete an existing credential.
