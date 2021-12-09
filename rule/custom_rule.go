@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 )
@@ -12,11 +13,11 @@ const CustomRulesEndpoint = "api/v1/custom-rules"
 
 type CustomRule struct {
 	Description string   `json:"description,omitempty"`
-	Id          []string `json:"_id,omitempty"`
-	Message     []string `json:"message,omitempty"`
+	Id          int `json:"_id,omitempty"`
+	Message     string `json:"message,omitempty"`
 	Name        string   `json:"name,omitempty"`
-	Script      []string `json:"script,omitempty"`
-	Type        []string `json:"type,omitempty"`
+	Script      string `json:"script,omitempty"`
+	Type        string `json:"type,omitempty"`
 }
 
 // Get all custom rules.
@@ -39,14 +40,14 @@ func GetCustomRule(c pcc.Client, id int) (*CustomRule, error) {
 			return &val, nil
 		}
 	}
-	return nil, fmt.Errorf("custom rule '%s' not found", name)
+	return nil, fmt.Errorf("custom rule '%d' not found", id)
 }
 
 // Create a new custom rule.
 func CreateCustomRule(c pcc.Client, rule CustomRule) error {
 	id, err := GenerateCustomRuleId(c)
 	if err != nil {
-		return nil, fmt.Errorf("error getting custom rules '%d': %s", id, err)
+		return fmt.Errorf("error getting custom rules '%d': %s", id, err)
 	}
 	rule.Id = id
 	return UpdateCustomRule(c, rule)
