@@ -44,13 +44,13 @@ func GetCustomRule(c pcc.Client, id int) (*CustomRule, error) {
 }
 
 // Create a new custom rule.
-func CreateCustomRule(c pcc.Client, rule CustomRule) error {
+func CreateCustomRule(c pcc.Client, rule CustomRule) (int, error) {
 	id, err := GenerateCustomRuleId(c)
 	if err != nil {
-		return fmt.Errorf("error getting custom rules '%d': %s", id, err)
+		return -1, fmt.Errorf("error getting custom rules '%d': %s", id, err)
 	}
 	rule.Id = id
-	return UpdateCustomRule(c, rule)
+	return id, UpdateCustomRule(c, rule)
 }
 
 // Helper method to generate id for new custom rule
