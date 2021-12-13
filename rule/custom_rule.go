@@ -2,9 +2,7 @@ package rule
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
-	"time"
 
 	"github.com/paloaltonetworks/prisma-cloud-compute-go/pcc"
 )
@@ -53,26 +51,22 @@ func CreateCustomRule(c pcc.Client, rule CustomRule) (int, error) {
 	return id, UpdateCustomRule(c, rule)
 }
 
-// Helper method to generate id for new custom rule
+// Helper method to generate an ID for new custom rule.
+// Finds the maximum custom rule ID and increments it by 1.
 func GenerateCustomRuleId(c pcc.Client) (int, error) {
 	rules, err := ListCustomRules(c)
 	if err != nil {
 		return -1, fmt.Errorf("error getting custom rules: %s", err)
 	}
-	rand.Seed(time.Now().UnixNano())
-	for {
-		id := rand.Intn(100000000)
-		unique := true
-		for _, val := range rules {
-			if val.Id == id {
-				unique = false
-			}
-		}
-		if unique {
-			return id, nil
+
+	// Assuming rules may not be sorted by ID.
+	maxId := 0
+	for _, val := range rules {
+		if val.Id > maxId {
+			maxId = val.Id
 		}
 	}
-	return -1, fmt.Errorf("error generating custom rule id")
+	return maxId + 1, nil
 }
 
 // Update an existing collection.
