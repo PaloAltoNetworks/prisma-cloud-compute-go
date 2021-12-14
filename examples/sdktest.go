@@ -25,13 +25,13 @@ func main() {
 		fmt.Printf("error reading creds file: %v", err)
 		return
 	}
-	var creds pcc.Credentials
-	if err := json.Unmarshal(fileContent, &creds); err != nil {
+	var config pcc.APIClientConfig
+	if err := json.Unmarshal(fileContent, &config); err != nil {
 		fmt.Printf("error unmarshalling creds file: %v", err)
 		return
 	}
 
-	client, err := pcc.APIClient(creds.ConsoleURL, creds.Username, creds.Password, creds.SkipCertVerification)
+	client, err := pcc.APIClient(config)
 	if err != nil {
 		fmt.Printf("failed creating API client: %v", err)
 		return

@@ -11,8 +11,9 @@ import (
 	"strings"
 )
 
-type Credentials struct {
+type APIClientConfig struct {
 	ConsoleURL           string `json:"console_url"`
+	Project              string `json:"project"`
 	Username             string `json:"username"`
 	Password             string `json:"password"`
 	SkipCertVerification bool   `json:"skip_cert_verification"`
@@ -20,16 +21,14 @@ type Credentials struct {
 
 // A connection to Prisma Cloud Compute.
 type Client struct {
-	ConsoleURL string
-	Username   string
-	Password   string
+	Config     APIClientConfig
 	HTTPClient *http.Client
 	JWT        string
 }
 
 // Communicate with the Prisma Cloud Compute API.
 func (c *Client) Request(method, endpoint string, query, data, response interface{}) (err error) {
-	parsedURL, err := url.Parse(c.ConsoleURL)
+	parsedURL, err := url.Parse(c.Config.ConsoleURL)
 	if err != nil {
 		return err
 	}
@@ -50,8 +49,14 @@ func (c *Client) Request(method, endpoint string, query, data, response interfac
 	}
 
 	req, err := http.NewRequest(method, completeURL.String(), &buf)
+	if err != nil {
+		return err
+	}
 	req.Header.Set("Authorization", "Bearer "+c.JWT)
 	req.Header.Set("Content-Type", "application/json")
+	queryParams := req.URL.Query()
+	queryParams.Set("project", c.Config.Project)
+	req.URL.RawQuery = queryParams.Encode()
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
@@ -89,31 +94,23 @@ func (c *Client) authenticate() (err error) {
 	}
 
 	res := AuthResponse{}
-
-	if c.Username != "" && c.Password != "" {
-		if err := c.Request(http.MethodPost, "/api/v1/authenticate", nil, AuthRequest{c.Username, c.Password}, &res); err != nil {
-			return err
-		}
-	} else {
-		return fmt.Errorf("username and/or password missing")
+	if err := c.Request(http.MethodPost, "/api/v1/authenticate", nil, AuthRequest{c.Config.Username, c.Config.Password}, &res); err != nil {
+		return fmt.Errorf("error POSTing to authenticate endpoint: %v", err)
 	}
-
 	c.JWT = res.Token
 	return nil
 }
 
 // Create Client and authenticate.
-func APIClient(console_url, username, password string, skip_cert_verification bool) (*Client, error) {
-	if !strings.HasSuffix(console_url, "/") {
-		console_url += "/"
+func APIClient(config APIClientConfig) (*Client, error) {
+	if !strings.HasSuffix(config.ConsoleURL, "/") {
+		config.ConsoleURL += "/"
 	}
 	apiClient := &Client{
-		ConsoleURL: console_url,
-		Username:   username,
-		Password:   password,
+		Config: config,
 	}
 
-	if skip_cert_verification {
+	if config.SkipCertVerification {
 		apiClient.HTTPClient = &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
@@ -126,7 +123,7 @@ func APIClient(console_url, username, password string, skip_cert_verification bo
 	}
 
 	if err := apiClient.authenticate(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error authenticating: %v", err)
 	}
 
 	return apiClient, nil
