@@ -27,7 +27,7 @@ func ListCustomRules(c pcc.Client) ([]CustomRule, error) {
 	return ans, nil
 }
 
-// Get a specific custom rule.
+// Get a specific custom rule by ID.
 func GetCustomRule(c pcc.Client, id int) (*CustomRule, error) {
 	rules, err := ListCustomRules(c)
 	if err != nil {
@@ -39,6 +39,20 @@ func GetCustomRule(c pcc.Client, id int) (*CustomRule, error) {
 		}
 	}
 	return nil, fmt.Errorf("custom rule '%d' not found", id)
+}
+
+// Get a specific custom rule by Name.
+func GetCustomRuleByName(c pcc.Client, name string) (*CustomRule, error) {
+	rules, err := ListCustomRules(c)
+	if err != nil {
+		return nil, fmt.Errorf("error getting custom rules '%s': %s", name, err)
+	}
+	for _, val := range rules {
+		if val.Name == name {
+			return &val, nil
+		}
+	}
+	return nil, fmt.Errorf("custom rule '%s' not found", name)
 }
 
 // Create a new custom rule.
