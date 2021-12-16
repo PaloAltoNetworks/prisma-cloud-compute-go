@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.1 - 2021-12-16
+### Added
+- Support for getting custom runtime rule by name.
+
 ## Version 0.4.0 - 2021-12-14
 ### Added
 - Projects support.
