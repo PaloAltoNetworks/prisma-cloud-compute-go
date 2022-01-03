@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.2 - 2022-01-03
+### Fixed
+- Fixed issue with path resolution for SaaS Console addresses.
+
 ## Version 0.4.1 - 2021-12-16
 ### Added
 - Support for getting custom runtime rule by name.
