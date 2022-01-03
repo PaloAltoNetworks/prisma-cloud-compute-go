@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
+	"path"
 )
 
 type APIClientConfig struct {
@@ -32,11 +32,7 @@ func (c *Client) Request(method, endpoint string, query, data, response interfac
 	if err != nil {
 		return err
 	}
-	parsedEndpoint, err := url.Parse(endpoint)
-	if err != nil {
-		return err
-	}
-	completeURL := parsedURL.ResolveReference(parsedEndpoint)
+	parsedURL.Path = path.Join(parsedURL.Path, endpoint)
 
 	var buf bytes.Buffer
 
@@ -48,15 +44,17 @@ func (c *Client) Request(method, endpoint string, query, data, response interfac
 		buf = *bytes.NewBuffer(data_json)
 	}
 
-	req, err := http.NewRequest(method, completeURL.String(), &buf)
+	req, err := http.NewRequest(method, parsedURL.String(), &buf)
 	if err != nil {
 		return err
 	}
 	req.Header.Set("Authorization", "Bearer "+c.JWT)
 	req.Header.Set("Content-Type", "application/json")
-	queryParams := req.URL.Query()
-	queryParams.Set("project", c.Config.Project)
-	req.URL.RawQuery = queryParams.Encode()
+	if c.Config.Project != "" {
+		queryParams := req.URL.Query()
+		queryParams.Set("project", c.Config.Project)
+		req.URL.RawQuery = queryParams.Encode()
+	}
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
@@ -103,9 +101,6 @@ func (c *Client) authenticate() (err error) {
 
 // Create Client and authenticate.
 func APIClient(config APIClientConfig) (*Client, error) {
-	if !strings.HasSuffix(config.ConsoleURL, "/") {
-		config.ConsoleURL += "/"
-	}
 	apiClient := &Client{
 		Config: config,
 	}
