@@ -32,6 +32,9 @@ func (c *Client) Request(method, endpoint string, query, data, response interfac
 	if err != nil {
 		return err
 	}
+	if parsedURL.Scheme == "" {
+		parsedURL.Scheme = "https"
+	}
 	parsedURL.Path = path.Join(parsedURL.Path, endpoint)
 
 	var buf bytes.Buffer
